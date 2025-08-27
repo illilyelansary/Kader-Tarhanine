@@ -155,7 +155,7 @@ function App() {
                         <h4 className="font-semibold">Ikewane</h4>
                         <p className="text-gray-600">Album • 2019</p>
                       </div>
-                      <Button size="sm" className="bg-orange-600 hover:bg-orange-700" onClick={() => openLink('https://open.spotify.com/album/3SvdHS7FQFihDgQmpBLCHX')}>
+                      <Button size="sm" className="bg-orange-600 hover:bg-orange-700" onClick={() => openLink('https://open.spotify.com/intl-fr/album/4khQAqdVbydwxkGmCTixu7?si=32VisFb8SQK7QlOjd7Dz3A')}>
                         <Play size={16} />
                       </Button>
                     </div>
@@ -164,7 +164,7 @@ function App() {
                         <h4 className="font-semibold">Tenere</h4>
                         <p className="text-gray-600">Album • 2017</p>
                       </div>
-                      <Button size="sm" className="bg-orange-600 hover:bg-orange-700" onClick={() => openLink('https://open.spotify.com/album/xyz')}>
+                      <Button size="sm" className="bg-orange-600 hover:bg-orange-700" onClick={() => openLink('https://open.spotify.com/intl-fr/album/3M1ibb7qJILS8kiI5rXTl3?si=dyIauVB7S9i1XlmUANrCYQ')}>
                         <Play size={16} />
                       </Button>
                     </div>
@@ -204,7 +204,7 @@ function App() {
             <div className="text-center mt-12">
               <h3 className="text-2xl font-bold mb-6 tuareg-blue">Écouter sur les plateformes</h3>
               <div className="flex flex-wrap justify-center gap-4">
-                <a href="https://open.spotify.com/artist/6UCcNSdjmXCpfMQz4mzxG7" target="_blank" rel="noopener noreferrer" className="bg-green-600 hover:bg-green-700 text-white px-6 py-2 rounded-full text-lg font-medium transition-all">
+                <a href="https://open.spotify.com/intl-fr/artist/7Et5H8GXkBE3F2nFolwyPV?si=Qi4y6vPwRoC54CcOiggnIA" target="_blank" rel="noopener noreferrer" className="bg-green-600 hover:bg-green-700 text-white px-6 py-2 rounded-full text-lg font-medium transition-all">
                   Spotify
                 </a>
                 <a href="https://music.apple.com/us/artist/kader-tarhanine/1459051799" target="_blank" rel="noopener noreferrer" className="bg-gray-900 hover:bg-gray-800 text-white px-6 py-2 rounded-full text-lg font-medium transition-all">
