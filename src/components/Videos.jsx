@@ -74,7 +74,7 @@ const Videos = () => {
       id: 3,
       title: 'Tarhanine (feat. Sidiki Diabaté)',
       year: '2018',
-      url: 'https://artsandculture.google.com/asset/official-music-video-of-tarhanine-by-kader-tarhanine-and-sidiki-diabat%C3%A9-88-production/FwF7hPoseNgE-g?hl=en',
+      url: 'https://www.youtube.com/watch?v=pM7sdSJtDgU',
       // Non-YouTube → on utilisera cette miniature si fournie, sinon placeholder
       thumbnail: 'https://img.youtube.com/vi/dQw4w9WgXcQ/maxresdefault.jpg',
       views: 'Collaboration',
@@ -225,7 +225,7 @@ const Videos = () => {
 
           <div className="text-center mt-12">
             <Button
-              onClick={() => window.open('https://www.youtube.com/@kadertarhanineofficial3970', '_blank')}
+              onClick={() => window.open('https://www.youtube.com/@EssakaneProduction', '_blank')}
               className="bg-red-600 hover:bg-red-700 text-white px-8 py-3 text-lg rounded-full hover-lift"
             >
               <Youtube className="mr-2" size={20} />
