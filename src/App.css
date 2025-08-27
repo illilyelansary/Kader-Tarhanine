@@ -165,7 +165,12 @@
     backdrop-filter: blur(10px);
     border: 1px solid rgba(255, 255, 255, 0.2);
   }
-  
+  .glass-effect {
+  background-color: rgba(255, 255, 255, 0.6);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  color: #000;
+}
   .hover-lift {
     transition: transform 0.3s ease, box-shadow 0.3s ease;
   }
