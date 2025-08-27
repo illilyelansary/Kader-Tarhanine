@@ -225,12 +225,12 @@ function App() {
           <div className="max-w-6xl mx-auto">
             <h2 className="text-5xl font-bold text-center mb-16 tuareg-blue">Concerts & Festivals</h2>
             <div className="grid md:grid-cols-2 gap-8">
-              {/* Prochains concerts */}
+              {/* Derniers concerts */}
               <Card className="hover-lift">
                 <CardContent className="p-8">
                   <h3 className="text-2xl font-bold mb-6 desert-orange">Prochains concerts</h3>
                   <div className="border-l-4 border-orange-500 pl-6 mb-6">
-                    <h4 className="font-semibold text-lg">Festival Osaka 2025</h4>
+                    <h4 className="font-semibold text-lg">Expo Osaka 2025</h4>
                     <p className="text-gray-600 flex items-center mt-2">
                       <MapPin size={16} className="mr-2" /> Osaka, Japon • 2 août 2025
                     </p>
