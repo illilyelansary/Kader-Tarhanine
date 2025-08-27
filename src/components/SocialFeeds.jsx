@@ -1,10 +1,34 @@
-import React from 'react'
+import React, { useEffect, useMemo, useState } from 'react'
 import { Card, CardContent } from '@/components/ui/card.jsx'
 import { Button } from '@/components/ui/button.jsx'
 import { Instagram, Youtube, Facebook, ExternalLink, Heart, MessageCircle, Share } from 'lucide-react'
 
+const getYouTubeId = (url = '') => {
+  const m =
+    url.match(/(?:youtube\.com.*[?&]v=|youtu\.be\/)([a-zA-Z0-9_-]{11})/) ||
+    url.match(/youtube\.com\/shorts\/([a-zA-Z0-9_-]{11})/)
+  return m ? m[1] : null
+}
+
+const getYTThumb = (id, quality = 'max') =>
+  `https://img.youtube.com/vi/${id}/${quality === 'max' ? 'maxresdefault.jpg' : 'hqdefault.jpg'}`
+
+const platformIcon = (platform) => {
+  switch (platform) {
+    case 'instagram':
+      return <Instagram size={20} className="text-pink-500" />
+    case 'facebook':
+      return <Facebook size={20} className="text-blue-600" />
+    case 'youtube':
+      return <Youtube size={20} className="text-red-600" />
+    default:
+      return null
+  }
+}
+
 const SocialFeeds = () => {
-  const socialPosts = [
+  // ➜ Tu peux ajouter "url" par post pour activer l’aperçu automatique.
+  const socialPosts = useMemo(() => ([
     {
       id: 1,
       platform: 'instagram',
@@ -12,16 +36,19 @@ const SocialFeeds = () => {
       date: '8 juin 2025',
       likes: '2.5K',
       comments: '156',
-      image: 'https://via.placeholder.com/400x400/f97316/ffffff?text=Instagram+Post'
+      // Si tu mets l’URL exacte du post Instagram ici, on tirera l’og:image côté serveur :
+      url: 'https://www.instagram.com/p/C_placeholder/',
+      image: '' // facultatif : si tu laisses vide, on cherchera automatiquement
     },
     {
       id: 2,
       platform: 'facebook',
-      content: 'Da Kader Tarhanine will perform at the African Beats Festival on August 9 at 6 p.m. An icon of the new wave of Tamasheq music...',
+      content: 'Da Kader Tarhanine will perform at the African Beats Festival on August 9 at 6 p.m. ...',
       date: '5 août 2025',
       likes: '1.8K',
       comments: '89',
-      image: 'https://via.placeholder.com/400x300/3b82f6/ffffff?text=Facebook+Post'
+      url: 'https://www.facebook.com/kadertarhanineofficiel/posts/POST_ID',
+      image: ''
     },
     {
       id: 3,
@@ -30,52 +57,82 @@ const SocialFeeds = () => {
       date: '6 juillet 2025',
       likes: '2.8K',
       comments: '234',
-      image: 'https://via.placeholder.com/400x225/ef4444/ffffff?text=YouTube+Video'
+      url: 'https://www.youtube.com/watch?v=7SORkXHJHeg', // ➜ miniature auto
+      image: '' // on l’ignorera si l’URL est YouTube
     }
-  ]
+  ]), [])
 
   const socialLinks = [
-    {
-      platform: 'Instagram',
-      handle: '@kadertarhanine',
-      followers: '105K',
-      url: 'https://www.instagram.com/kadertarhanine/',
-      icon: Instagram,
-      color: 'bg-gradient-to-r from-purple-500 to-pink-500'
-    },
-    {
-      platform: 'Facebook',
-      handle: 'Kader Tarhanine Official',
-      followers: '27K',
-      url: 'https://www.facebook.com/kadertarhanineofficiel/',
-      icon: Facebook,
-      color: 'bg-blue-600'
-    },
-    {
-      platform: 'YouTube',
-      handle: 'Kader Tarhanine Official',
-      followers: '144K',
-      url: 'https://www.youtube.com/@kadertarhanineofficial3970',
-      icon: Youtube,
-      color: 'bg-red-600'
-    }
+    { platform: 'Instagram', handle: '@kadertarhanine', followers: '105K', url: 'https://www.instagram.com/kadertarhanine/', icon: Instagram, color: 'bg-gradient-to-r from-purple-500 to-pink-500' },
+    { platform: 'Facebook', handle: 'Kader Tarhanine Official', followers: '27K', url: 'https://www.facebook.com/kadertarhanineofficiel/', icon: Facebook, color: 'bg-blue-600' },
+    { platform: 'YouTube', handle: 'Kader Tarhanine Official', followers: '144K', url: 'https://www.youtube.com/@kadertarhanineofficial3970', icon: Youtube, color: 'bg-red-600' },
   ]
 
-  const getPlatformIcon = (platform) => {
-    switch (platform) {
-      case 'instagram':
-        return <Instagram size={20} className="text-pink-500" />
-      case 'facebook':
-        return <Facebook size={20} className="text-blue-600" />
-      case 'youtube':
-        return <Youtube size={20} className="text-red-600" />
-      default:
-        return null
-    }
-  }
+  // Map des aperçus résolus (id -> URL image)
+  const [previews, setPreviews] = useState({})
 
-  const openSocialLink = (url) => {
-    window.open(url, '_blank')
+  // Résolution des aperçus au chargement
+  useEffect(() => {
+    let isMounted = true
+
+    const load = async () => {
+      const entries = await Promise.all(socialPosts.map(async (post) => {
+        // 1) Si image déjà fournie dans les données, on la garde telle quelle
+        if (post.image) return [post.id, post.image]
+
+        // 2) Si YouTube → miniature sans appel réseau
+        const ytid = post.url ? getYouTubeId(post.url) : null
+        if (ytid) return [post.id, getYTThumb(ytid, 'max')]
+
+        // 3) Sinon, on tente de récupérer og:image côté serveur
+        if (post.url) {
+          try {
+            const r = await fetch(`/api/og-preview?url=${encodeURIComponent(post.url)}`)
+            if (r.ok) {
+              const data = await r.json()
+              if (data?.image) return [post.id, data.image]
+            }
+          } catch (_) {
+            // noop
+          }
+        }
+
+        // 4) Fallback jolis placeholders par plateforme
+        const fallback =
+          post.platform === 'instagram'
+            ? 'https://via.placeholder.com/400x400/f97316/ffffff?text=Instagram+Post'
+            : post.platform === 'facebook'
+              ? 'https://via.placeholder.com/400x300/3b82f6/ffffff?text=Facebook+Post'
+              : 'https://via.placeholder.com/400x225/ef4444/ffffff?text=YouTube+Video'
+        return [post.id, fallback]
+      }))
+
+      if (isMounted) {
+        setPreviews(Object.fromEntries(entries))
+      }
+    }
+
+    load()
+    return () => { isMounted = false }
+  }, [socialPosts])
+
+  const open = (url) => window.open(url, '_blank')
+
+  const handleImgError = (post) => (e) => {
+    const src = e.currentTarget.getAttribute('src') || ''
+    const id = post.url ? getYouTubeId(post.url) : null
+    if (id && src.includes('maxresdefault')) {
+      e.currentTarget.setAttribute('src', getYTThumb(id, 'hq'))
+    } else {
+      // dernier repli
+      const fallback =
+        post.platform === 'instagram'
+          ? 'https://via.placeholder.com/400x400/f97316/ffffff?text=Instagram+Post'
+          : post.platform === 'facebook'
+            ? 'https://via.placeholder.com/400x300/3b82f6/ffffff?text=Facebook+Post'
+            : 'https://via.placeholder.com/400x225/ef4444/ffffff?text=YouTube+Video'
+      e.currentTarget.setAttribute('src', fallback)
+    }
   }
 
   return (
@@ -91,25 +148,22 @@ const SocialFeeds = () => {
 
           {/* Liens vers les réseaux sociaux */}
           <div className="grid md:grid-cols-3 gap-8 mb-16">
-            {socialLinks.map((social) => {
-              const Icon = social.icon
+            {socialLinks.map((s) => {
+              const Icon = s.icon
               return (
-                <Card key={social.platform} className="hover-lift cursor-pointer" onClick={() => openSocialLink(social.url)}>
+                <Card key={s.platform} className="hover-lift cursor-pointer" onClick={() => open(s.url)}>
                   <CardContent className="p-8 text-center">
-                    <div className={`${social.color} w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4`}>
+                    <div className={`${s.color} w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4`}>
                       <Icon size={32} className="text-white" />
                     </div>
-                    <h3 className="text-xl font-bold mb-2">{social.platform}</h3>
-                    <p className="text-gray-600 mb-2">{social.handle}</p>
-                    <p className="text-2xl font-bold desert-orange">{social.followers}</p>
+                    <h3 className="text-xl font-bold mb-2">{s.platform}</h3>
+                    <p className="text-gray-600 mb-2">{s.handle}</p>
+                    <p className="text-2xl font-bold desert-orange">{s.followers}</p>
                     <p className="text-sm text-gray-500">abonnés</p>
-                    <Button 
+                    <Button
                       className="mt-4 w-full"
                       variant="outline"
-                      onClick={(e) => {
-                        e.stopPropagation()
-                        openSocialLink(social.url)
-                      }}
+                      onClick={(e) => { e.stopPropagation(); open(s.url) }}
                     >
                       Suivre
                       <ExternalLink className="ml-2" size={16} />
@@ -127,13 +181,15 @@ const SocialFeeds = () => {
               {socialPosts.map((post) => (
                 <Card key={post.id} className="overflow-hidden hover-lift">
                   <div className="relative">
-                    <img 
-                      src={post.image} 
+                    <img
+                      src={previews[post.id]}
                       alt={`${post.platform} post`}
-                      className="w-full h-48 object-cover"
+                      className="w-full h-48 object-cover transition-transform duration-300"
+                      loading="lazy"
+                      onError={handleImgError(post)}
                     />
                     <div className="absolute top-4 left-4 bg-white/90 backdrop-blur-sm rounded-full p-2">
-                      {getPlatformIcon(post.platform)}
+                      {platformIcon(post.platform)}
                     </div>
                   </div>
                   <CardContent className="p-6">
@@ -152,7 +208,7 @@ const SocialFeeds = () => {
                           <span>{post.comments}</span>
                         </div>
                       </div>
-                      <Button size="sm" variant="ghost">
+                      <Button size="sm" variant="ghost" onClick={() => post.url && window.open(post.url, '_blank')}>
                         <Share size={16} />
                       </Button>
                     </div>
@@ -163,20 +219,14 @@ const SocialFeeds = () => {
           </div>
 
           <div className="text-center mt-12">
-            <p className="text-gray-600 mb-6">
-              Restez connectés pour toutes les dernières nouvelles et mises à jour !
-            </p>
+            <p className="text-gray-600 mb-6">Restez connectés pour toutes les dernières nouvelles et mises à jour !</p>
             <div className="flex flex-wrap justify-center gap-4">
-              {socialLinks.map((social) => {
-                const Icon = social.icon
+              {socialLinks.map((s) => {
+                const Icon = s.icon
                 return (
-                  <Button 
-                    key={social.platform}
-                    onClick={() => openSocialLink(social.url)}
-                    className={`${social.color} hover:opacity-90 text-white px-6 py-3 rounded-full hover-lift`}
-                  >
+                  <Button key={s.platform} onClick={() => open(s.url)} className={`${s.color} hover:opacity-90 text-white px-6 py-3 rounded-full hover-lift`}>
                     <Icon className="mr-2" size={20} />
-                    {social.platform}
+                    {s.platform}
                   </Button>
                 )
               })}
@@ -189,4 +239,3 @@ const SocialFeeds = () => {
 }
 
 export default SocialFeeds
-
