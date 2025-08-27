@@ -67,7 +67,7 @@ const Videos = () => {
       title: 'Zain Assahra (feat. MOUNA DENDENNI)',
       year: '2024',
       url: 'https://www.youtube.com/watch?v=Oe--JnLzEx0',
-      thumbnail: 'https://img.youtube.com/vi/Oe--JnLzEx0/maxresdefault.jpg',
+      thumbnail: 'https://img.youtube.com/vi/OEx0/maxresdefault.pg',
       views: '4.1M vues',
     },
     {
