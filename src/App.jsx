@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useMemo } from 'react'
 import { Button } from '@/components/ui/button.jsx'
 import { Card, CardContent } from '@/components/ui/card.jsx'
 import { Music, Play, Calendar, MapPin, Instagram, Youtube, Mail, Guitar, Camera, Video, Users } from 'lucide-react'
@@ -16,14 +16,14 @@ function App() {
   const [activeSection, setActiveSection] = useState('accueil')
   const [isScrolled, setIsScrolled] = useState(false)
 
+  // --- NAV scroll state
   useEffect(() => {
-    const handleScroll = () => {
-      setIsScrolled(window.scrollY > 50)
-    }
+    const handleScroll = () => setIsScrolled(window.scrollY > 50)
     window.addEventListener('scroll', handleScroll)
     return () => window.removeEventListener('scroll', handleScroll)
   }, [])
 
+  // --- Deep-link (#hash -> scroll)
   useEffect(() => {
     const hash = window.location.hash
     if (hash) {
@@ -36,6 +36,7 @@ function App() {
     }
   }, [])
 
+  // --- Navigation items
   const navigation = [
     { id: 'accueil', label: 'Accueil', icon: Music },
     { id: 'apropos', label: 'À propos', icon: Guitar },
@@ -50,12 +51,97 @@ function App() {
   const scrollToSection = (sectionId) => {
     setActiveSection(sectionId)
     const element = document.getElementById(sectionId)
-    if (element) {
-      element.scrollIntoView({ behavior: 'smooth' })
-    }
+    if (element) element.scrollIntoView({ behavior: 'smooth' })
   }
 
   const openLink = (url) => window.open(url, '_blank')
+
+  // ========= MUSIQUE : liens plateformes =========
+  const LINKS = {
+    artist: {
+      spotify: 'https://open.spotify.com/intl-fr/artist/7Et5H8GXkBE3F2nFolwyPV?si=Qi4y6vPwRoC54CcOiggnIA',
+      apple:   'https://music.apple.com/fr/artist/kader-tarhanine/1391675149',
+      youtube: 'https://music.youtube.com/channel/UC-4rv6cdUGPcdfy6GwSVVnw'
+    },
+    albums: {
+      Ikewane: 'https://open.spotify.com/intl-fr/album/4khQAqdVbydwxkGmCTixu7?si=32VisFb8SQK7QlOjd7Dz3A',
+      Tenere:  'https://open.spotify.com/intl-fr/album/3M1ibb7qJILS8kiI5rXTl3?si=dyIauVB7S9i1XlmUANrCYQ'
+    },
+    singles: {
+      // Remplace ces URL YouTube/Spotify par les liens officiels exacts si besoin
+      'Aliad Idja Ehane': 'https://www.youtube.com/watch?v=xxxxxxxxxxx',
+      'Meddane Taknassam (feat. Bombino)': 'https://www.youtube.com/watch?v=yyyyyyyyyyy'
+    }
+  }
+
+  // ========= CONCERTS & FESTIVALS : données + tri auto =========
+  // NOTE: format dateISO = 'YYYY-MM-DD' (UTC)
+  const EVENTS = [
+    // Proposés comme "Prochains" (mais seront reclassés automatiquement si la date est passée)
+    { title: 'Expo Osaka 2025', city: 'Osaka', country: 'Japon', dateISO: '2025-08-02', note: 'Expo', kind: 'concert' },
+    { title: 'African Beats Festival', city: 'Varsovie', country: 'Pologne', dateISO: '2025-08-09', note: 'Festival', kind: 'festival' },
+    { title: 'Sfinks Mixed', city: 'Anvers', country: 'Belgique', dateISO: '2025-07-27', note: 'Festival', kind: 'festival' },
+
+    // Festivals / concerts passés (avec dates connues)
+    { title: 'Rudolstadt Festival', city: 'Rudolstadt', country: 'Allemagne', dateISO: '2025-07-06', note: 'Festival', kind: 'festival' },
+    { title: 'Rotterdam Bluegrass Festival', city: 'Rotterdam', country: 'Pays-Bas', dateISO: '2024-06-30', note: 'Festival', kind: 'festival' },
+    { title: 'Roskilde Festival', city: 'Roskilde', country: 'Danemark', dateISO: '2024-07-04', note: 'Festival', kind: 'festival' },
+    { title: 'Oslo World Festival', city: 'Oslo', country: 'Norvège', dateISO: '2023-11-01', note: 'Festival', kind: 'festival' },
+
+    // Anciens sans date précise -> seront rangés dans "Passés"
+    { title: 'Timitar Festival', city: 'Agadir', country: 'Maroc', dateISO: null, note: 'Festival', kind: 'festival' },
+    { title: 'Festival of World Sacred Music', city: 'Fès', country: 'Maroc', dateISO: null, note: 'Festival', kind: 'festival' },
+  ]
+
+  // Date "aujourd'hui" : on l'utilise pour splitter passé / futur
+  // (Le fuseau du navigateur sera utilisé. C’est acceptable pour un tri simple.)
+  const today = useMemo(() => new Date(), [])
+
+  // Helpers
+  const parseISO = (iso) => (iso ? new Date(iso + 'T00:00:00Z') : null)
+
+  const compareAsc = (a, b) => {
+    const da = parseISO(a.dateISO)
+    const db = parseISO(b.dateISO)
+    if (!da && !db) return a.title.localeCompare(b.title)
+    if (!da) return 1
+    if (!db) return -1
+    return da - db
+  }
+  const compareDesc = (a, b) => -compareAsc(a, b)
+
+  const isUpcoming = (ev) => {
+    const d = parseISO(ev.dateISO)
+    if (!d) return false // sans date => classé comme passé/récent
+    // Si la date >= aujourd'hui (minuit), on considère à venir
+    const todayMidnight = new Date(today.getFullYear(), today.getMonth(), today.getDate())
+    return d >= todayMidnight
+  }
+
+  const { upcomingEvents, pastEvents } = useMemo(() => {
+    const upcoming = []
+    const past = []
+    for (const ev of EVENTS) {
+      if (isUpcoming(ev)) upcoming.push(ev)
+      else past.push(ev)
+    }
+    // Tri : à venir (date la plus proche en premier), passés (plus récent en premier)
+    upcoming.sort(compareAsc)
+    past.sort(compareDesc)
+    return { upcomingEvents: upcoming, pastEvents: past }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [EVENTS])
+
+  // Format date FR
+  const fmtDate = (iso) => {
+    if (!iso) return '' // pas de date précise
+    try {
+      const d = parseISO(iso)
+      return new Intl.DateTimeFormat('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' }).format(d)
+    } catch {
+      return iso
+    }
+  }
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-amber-50 to-orange-50">
@@ -91,7 +177,11 @@ function App() {
         <div className="absolute inset-0 parallax-bg opacity-30" style={{ backgroundImage: `url(${desertLandscape})` }} />
         <div className="hero-overlay" />
         <div className="relative z-10 text-center text-white px-6 py-20">
-          <img src={kaderPhoto} alt="Kader Tarhanine" className="w-48 h-48 md:w-64 md:h-64 rounded-full mx-auto mt-4 mb-8 object-cover border-4 border-white/30 shadow-2xl" />
+          <img
+            src={kaderPhoto}
+            alt="Kader Tarhanine"
+            className="w-48 h-48 md:w-64 md:h-64 rounded-full mx-auto mt-4 mb-8 object-cover border-4 border-white/30 shadow-2xl"
+          />
           <h1 className="text-4xl md:text-6xl lg:text-8xl font-bold mb-4">Kader Tarhanine</h1>
           <p className="text-xl md:text-2xl lg:text-3xl mb-8">Prince du Desert Blues</p>
           <p className="text-base md:text-lg lg:text-xl mb-12 max-w-2xl mx-auto opacity-90">
@@ -117,16 +207,16 @@ function App() {
               <div className="space-y-6">
                 <h3 className="text-3xl font-semibold desert-orange">L'artiste le plus écouté du Sahara</h3>
                 <p className="text-lg text-gray-700 leading-relaxed">
-                  Né en 1989 à Borj Moctar en Algérie, Kader Tarhanine (né Abd Elkadir Sabou) incarne la nouvelle génération 
-                  de la musique Touaregue. Ses origines nomades du légendaire désert du Sahara du Mali (Ménaka) transparaissent dans 
+                  Né en 1989 à Borj Moctar en Algérie, Kader Tarhanine (né Abd Elkadir Sabou) incarne la nouvelle génération
+                  de la musique Touaregue. Ses origines nomades du légendaire désert du Sahara du Mali (Ménaka) transparaissent dans
                   chaque note de sa guitare.
                 </p>
                 <p className="text-lg text-gray-700 leading-relaxed">
-                  Leader du groupe du même nom ou souvent appélé Afous d'Afous, il est devenu l'un des artistes les plus suivis 
+                  Leader du groupe du même nom (souvent appelé Afous d'Afous), il est devenu l'un des artistes les plus suivis
                   par les jeunes du Sahara, incarnant la nouveauté de style, la jeunesse et le talent naturel.
                 </p>
                 <p className="text-lg text-gray-700 leading-relaxed">
-                  Sa musique allie les rythmes traditionnels aux tonalités rock sur des paroles poétiques 
+                  Sa musique allie les rythmes traditionnels aux tonalités rock sur des paroles poétiques
                   sahéliennes et arabophones, créant un pont unique entre tradition et modernité.
                 </p>
               </div>
@@ -155,7 +245,13 @@ function App() {
                         <h4 className="font-semibold">Ikewane</h4>
                         <p className="text-gray-600">Album • 2019</p>
                       </div>
-                      <Button size="sm" className="bg-orange-600 hover:bg-orange-700" onClick={() => openLink('https://open.spotify.com/intl-fr/album/4khQAqdVbydwxkGmCTixu7?si=32VisFb8SQK7QlOjd7Dz3A')}>
+                      <Button
+                        size="sm"
+                        className="bg-orange-600 hover:bg-orange-700"
+                        onClick={() => openLink(LINKS.albums.Ikewane)}
+                        aria-label="Écouter Ikewane sur Spotify"
+                        title="Écouter sur Spotify"
+                      >
                         <Play size={16} />
                       </Button>
                     </div>
@@ -164,7 +260,13 @@ function App() {
                         <h4 className="font-semibold">Tenere</h4>
                         <p className="text-gray-600">Album • 2017</p>
                       </div>
-                      <Button size="sm" className="bg-orange-600 hover:bg-orange-700" onClick={() => openLink('https://open.spotify.com/intl-fr/album/3M1ibb7qJILS8kiI5rXTl3?si=dyIauVB7S9i1XlmUANrCYQ')}>
+                      <Button
+                        size="sm"
+                        className="bg-orange-600 hover:bg-orange-700"
+                        onClick={() => openLink(LINKS.albums.Tenere)}
+                        aria-label="Écouter Tenere sur Spotify"
+                        title="Écouter sur Spotify"
+                      >
                         <Play size={16} />
                       </Button>
                     </div>
@@ -182,7 +284,13 @@ function App() {
                         <h4 className="font-semibold">Aliad Idja Ehane</h4>
                         <p className="text-gray-600">Single • 2024</p>
                       </div>
-                      <Button size="sm" className="bg-orange-600 hover:bg-orange-700" onClick={() => openLink('https://youtu.be/xyz')}>
+                      <Button
+                        size="sm"
+                        className="bg-orange-600 hover:bg-orange-700"
+                        onClick={() => openLink(LINKS.singles['Aliad Idja Ehane'])}
+                        aria-label="Lire Aliad Idja Ehane"
+                        title="Lire sur YouTube"
+                      >
                         <Play size={16} />
                       </Button>
                     </div>
@@ -191,7 +299,13 @@ function App() {
                         <h4 className="font-semibold">Meddane Taknassam (feat. Bombino)</h4>
                         <p className="text-gray-600">Single • 2024</p>
                       </div>
-                      <Button size="sm" className="bg-orange-600 hover:bg-orange-700" onClick={() => openLink('https://youtu.be/abc')}>
+                      <Button
+                        size="sm"
+                        className="bg-orange-600 hover:bg-orange-700"
+                        onClick={() => openLink(LINKS.singles['Meddane Taknassam (feat. Bombino)'])}
+                        aria-label="Lire Meddane Taknassam"
+                        title="Lire sur YouTube"
+                      >
                         <Play size={16} />
                       </Button>
                     </div>
@@ -204,13 +318,28 @@ function App() {
             <div className="text-center mt-12">
               <h3 className="text-2xl font-bold mb-6 tuareg-blue">Écouter sur les plateformes</h3>
               <div className="flex flex-wrap justify-center gap-4">
-                <a href="https://open.spotify.com/intl-fr/artist/7Et5H8GXkBE3F2nFolwyPV?si=Qi4y6vPwRoC54CcOiggnIA" target="_blank" rel="noopener noreferrer" className="bg-green-600 hover:bg-green-700 text-white px-6 py-2 rounded-full text-lg font-medium transition-all">
+                <a
+                  href={LINKS.artist.spotify}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="bg-green-600 hover:bg-green-700 text-white px-6 py-2 rounded-full text-lg font-medium transition-all"
+                >
                   Spotify
                 </a>
-                <a href="https://music.apple.com/fr/artist/kader-tarhanine/1391675149" target="_blank" rel="noopener noreferrer" className="bg-gray-900 hover:bg-gray-800 text-white px-6 py-2 rounded-full text-lg font-medium transition-all">
+                <a
+                  href={LINKS.artist.apple}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="bg-gray-900 hover:bg-gray-800 text-white px-6 py-2 rounded-full text-lg font-medium transition-all"
+                >
                   Apple Music
                 </a>
-                <a href="https://music.youtube.com/channel/UC-4rv6cdUGPcdfy6GwSVVnw" target="_blank" rel="noopener noreferrer" className="bg-red-600 hover:bg-red-700 text-white px-6 py-2 rounded-full text-lg font-medium transition-all">
+                <a
+                  href={LINKS.artist.youtube}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="bg-red-600 hover:bg-red-700 text-white px-6 py-2 rounded-full text-lg font-medium transition-all"
+                >
                   YouTube Music
                 </a>
               </div>
@@ -224,42 +353,40 @@ function App() {
         <div className="container mx-auto px-6">
           <div className="max-w-6xl mx-auto">
             <h2 className="text-5xl font-bold text-center mb-16 tuareg-blue">Concerts & Festivals</h2>
+
             <div className="grid md:grid-cols-2 gap-8">
-              {/* Derniers concerts */}
+              {/* À VENIR */}
               <Card className="hover-lift">
                 <CardContent className="p-8">
-                  <h3 className="text-2xl font-bold mb-6 desert-orange">Prochains concerts</h3>
-                  <div className="border-l-4 border-orange-500 pl-6 mb-6">
-                    <h4 className="font-semibold text-lg">Expo Osaka 2025</h4>
-                    <p className="text-gray-600 flex items-center mt-2">
-                      <MapPin size={16} className="mr-2" /> Osaka, Japon • 2 août 2025
-                    </p>
-                  </div>
-                  <div className="border-l-4 border-orange-500 pl-6 mb-6">
-                    <h4 className="font-semibold text-lg">African Beats Festival</h4>
-                    <p className="text-gray-600 flex items-center mt-2">
-                      <MapPin size={16} className="mr-2" /> Varsovie, Pologne • 9 août 2025
-                    </p>
-                  </div>
+                  <h3 className="text-2xl font-bold mb-6 desert-orange">À venir</h3>
+                  {upcomingEvents.length === 0 && (
+                    <p className="text-gray-600 text-center">Nouvelles dates bientôt annoncées.</p>
+                  )}
+                  {upcomingEvents.map((ev, i) => (
+                    <div key={`${ev.title}-${i}`} className="border-l-4 border-orange-500 pl-6 mb-6">
+                      <h4 className="font-semibold text-lg">{ev.title}</h4>
+                      <p className="text-gray-600 flex items-center mt-2">
+                        <MapPin size={16} className="mr-2" />
+                        {ev.city}{ev.country ? `, ${ev.country}` : ''}{ev.dateISO ? ` • ${fmtDate(ev.dateISO)}` : ''}
+                      </p>
+                    </div>
+                  ))}
                 </CardContent>
               </Card>
 
-              {/* Festivals récents */}
+              {/* PASSÉS / RÉCENTS */}
               <Card className="hover-lift">
                 <CardContent className="p-8">
-                  <h3 className="text-2xl font-bold mb-6 desert-orange">Festivals Récents</h3>
-                  <div className="border-l-4 border-blue-500 pl-6 mb-6">
-                    <h4 className="font-semibold text-lg">Rudolstadt Festival</h4>
-                    <p className="text-gray-600 flex items-center mt-2">
-                      <MapPin size={16} className="mr-2" /> Allemagne • Juil. 2025
-                    </p>
-                  </div>
-                  <div className="border-l-4 border-blue-500 pl-6 mb-6">
-                    <h4 className="font-semibold text-lg">Rotterdam Bluegrass Festival</h4>
-                    <p className="text-gray-600 flex items-center mt-2">
-                      <MapPin size={16} className="mr-2" /> Hollande • Juin 2024
-                    </p>
-                  </div>
+                  <h3 className="text-2xl font-bold mb-6 desert-orange">Passés / récents</h3>
+                  {pastEvents.map((ev, i) => (
+                    <div key={`${ev.title}-${i}`} className="border-l-4 border-blue-500 pl-6 mb-6">
+                      <h4 className="font-semibold text-lg">{ev.title}</h4>
+                      <p className="text-gray-600 flex items-center mt-2">
+                        <MapPin size={16} className="mr-2" />
+                        {ev.city}{ev.country ? `, ${ev.country}` : ''}{ev.dateISO ? ` • ${fmtDate(ev.dateISO)}` : ''}
+                      </p>
+                    </div>
+                  ))}
                 </CardContent>
               </Card>
             </div>
