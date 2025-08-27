@@ -117,12 +117,12 @@ function App() {
               <div className="space-y-6">
                 <h3 className="text-3xl font-semibold desert-orange">L'artiste le plus écouté du Sahara</h3>
                 <p className="text-lg text-gray-700 leading-relaxed">
-                  Né en 1989 à Borj El Moctar en Algérie, Kader Tarhanine (né Kader Sabou) incarne la nouvelle génération 
-                  de la musique Tuareg. Ses origines nomades du légendaire désert du Sahara du Mali transparaissent dans 
+                  Né en 1989 à Borj Moctar en Algérie, Kader Tarhanine (né Abd Elkadir Sabou) incarne la nouvelle génération 
+                  de la musique Touaregue. Ses origines nomades du légendaire désert du Sahara du Mali (Ménaka) transparaissent dans 
                   chaque note de sa guitare.
                 </p>
                 <p className="text-lg text-gray-700 leading-relaxed">
-                  Leader du groupe Afous d'Afous de Tamanrasset, il est devenu l'un des artistes les plus suivis 
+                  Leader du groupe du même nom ou souvent appélé Afous d'Afous, il est devenu l'un des artistes les plus suivis 
                   par les jeunes du Sahara, incarnant la nouveauté de style, la jeunesse et le talent naturel.
                 </p>
                 <p className="text-lg text-gray-700 leading-relaxed">
@@ -207,10 +207,10 @@ function App() {
                 <a href="https://open.spotify.com/intl-fr/artist/7Et5H8GXkBE3F2nFolwyPV?si=Qi4y6vPwRoC54CcOiggnIA" target="_blank" rel="noopener noreferrer" className="bg-green-600 hover:bg-green-700 text-white px-6 py-2 rounded-full text-lg font-medium transition-all">
                   Spotify
                 </a>
-                <a href="https://music.apple.com/us/artist/kader-tarhanine/1459051799" target="_blank" rel="noopener noreferrer" className="bg-gray-900 hover:bg-gray-800 text-white px-6 py-2 rounded-full text-lg font-medium transition-all">
+                <a href="https://music.apple.com/fr/artist/kader-tarhanine/1391675149" target="_blank" rel="noopener noreferrer" className="bg-gray-900 hover:bg-gray-800 text-white px-6 py-2 rounded-full text-lg font-medium transition-all">
                   Apple Music
                 </a>
-                <a href="https://music.youtube.com/channel/UC7LoNv8cLaEqTKc1uVXb75A" target="_blank" rel="noopener noreferrer" className="bg-red-600 hover:bg-red-700 text-white px-6 py-2 rounded-full text-lg font-medium transition-all">
+                <a href="https://music.youtube.com/channel/UC-4rv6cdUGPcdfy6GwSVVnw" target="_blank" rel="noopener noreferrer" className="bg-red-600 hover:bg-red-700 text-white px-6 py-2 rounded-full text-lg font-medium transition-all">
                   YouTube Music
                 </a>
               </div>
