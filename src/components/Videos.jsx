@@ -5,21 +5,21 @@ import { Play, Youtube, ExternalLink } from 'lucide-react'
 
 const Videos = () => {
   const clips = [
-    {
+     {
       id: 1,
+      title: "Al Gamra Leila",
+      year: "2023",
+      url: "https://www.youtube.com/watch?v=Sp0Fn4VI1yQ",
+      thumbnail: "https://img.youtube.com/vi/-RQ7DgMvtic/maxresdefault.jpg",
+      views: "+12.1M vues"
+    },
+    {
+      id: 2,
       title: "Zain Assahra (feat. MOUNA DENDENNI)",
       year: "2024",
       url: "https://www.youtube.com/watch?v=Oe--JnLzEx0",
       thumbnail: "https://img.youtube.com/vi/Oe--JnLzEx0/maxresdefault.jpg",
       views: "4.1M vues"
-    },
-    {
-      id: 2,
-      title: "H MED 45 - la la la ft. KADER TARHANINE",
-      year: "2025",
-      url: "https://www.youtube.com/watch?v=-RQ7DgMvtic",
-      thumbnail: "https://img.youtube.com/vi/-RQ7DgMvtic/maxresdefault.jpg",
-      views: "Nouveau"
     },
     {
       id: 3,
@@ -28,7 +28,16 @@ const Videos = () => {
       url: "https://artsandculture.google.com/asset/official-music-video-of-tarhanine-by-kader-tarhanine-and-sidiki-diabat%C3%A9-88-production/FwF7hPoseNgE-g?hl=en",
       thumbnail: "https://img.youtube.com/vi/dQw4w9WgXcQ/maxresdefault.jpg",
       views: "Collaboration"
+    },
+     {
+      id: 4,
+      title: "H MED 45 - la la la ft. KADER TARHANINE",
+      year: "2025",
+      url: "https://www.youtube.com/watch?v=-RQ7DgMvtic",
+      thumbnail: "https://img.youtube.com/vi/-RQ7DgMvtic/maxresdefault.jpg",
+      views: "Nouveau"
     }
+    
   ]
 
   const concerts = [
