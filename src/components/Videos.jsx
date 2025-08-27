@@ -10,7 +10,7 @@ const Videos = () => {
       title: "Al Gamra Leila",
       year: "2023",
       url: "https://www.youtube.com/watch?v=Sp0Fn4VI1yQ",
-      thumbnail: "https://img.youtube.com/vi/-RQ7DgMvtic/maxresdefault.jpg",
+      thumbnail: "https://sl.bing.net/b1E4EBzFyyy",
       views: "+12.1M vues"
     },
     {
