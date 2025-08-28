@@ -1,0 +1,8 @@
+# 1) Force tout en HTTPS
+http://*  https://:splat  301!
+
+# 2) (option) Choisis un canonique :
+#    Si tu veux forcer le www :
+https://kadertarhanine.com/*   https://www.kadertarhanine.com/:splat   301!
+#    — OU si tu préfères l'apex, inverse la règle :
+# https://www.kadertarhanine.com/*   https://kadertarhanine.com/:splat   301!
