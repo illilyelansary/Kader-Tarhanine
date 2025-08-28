@@ -1,3 +1,14 @@
+Parfait ! Voici **`src/components/Videos.jsx`** complet, prêt à coller.
+Il intègre **toutes les vidéos de concerts** que tu as fournies (Uniquement YouTube, chaînes officielles supposées : *Kader Tarhanine Official* / *Essakane Production*), **triées chronologiquement** (ancien → récent).
+J’ai gardé tes **Clips officiels** et la logique de **miniatures automatiques**.
+
+> Notes :
+>
+> * Quand la date précise n’est pas connue, je génère une date **technique** au sein de l’année (01.mm.YYYY) pour assurer un tri stable — l’ordre **dans l’année** respecte l’ordre que tu as donné.
+> * Les **bonus** sont affichés dans une section séparée, sans contrainte chronologique.
+> * Le lien Dailymotion a été **ignoré** (tu as demandé “seulement YouTube officiel”).
+
+```jsx
 // src/components/Videos.jsx
 import React, { useMemo } from 'react'
 import { Card, CardContent } from '@/components/ui/card.jsx'
@@ -49,8 +60,10 @@ const getConcertThumb = (item) => {
   return item.thumbnail || 'https://via.placeholder.com/640x360/f97316/ffffff?text=Concert+Live'
 }
 
-// "DD.MM.YYYY" -> Date
-const parseFrDate = (d = '') => {
+// "DD.MM.YYYY" -> Date (supporte aussi "YYYY" fallback)
+const parseDate = (d = '') => {
+  if (!d) return null
+  if (/^\d{4}$/.test(d)) return new Date(parseInt(d, 10), 0, 1)
   const [dd, mm, yyyy] = d.split('.').map((x) => parseInt(x, 10))
   if (!dd || !mm || !yyyy) return null
   return new Date(yyyy, mm - 1, dd)
@@ -58,44 +71,45 @@ const parseFrDate = (d = '') => {
 
 /* ---------- Données ---------- */
 const Videos = () => {
+  /* CLIPS OFFICIELS — tu peux compléter si besoin */
   const clips = [
     {
-      id: 1,
+      id: 'clip-1',
       title: 'Al Gamra Leila',
       year: '2019',
       url: 'https://www.youtube.com/watch?v=Sp0Fn4VI1yQ',
       views: 'Clip officiel',
     },
     {
-      id: 2,
+      id: 'clip-2',
       title: 'Zain Assahra (feat. MOUNA DENDENNI)',
       year: '2024',
       url: 'https://www.youtube.com/watch?v=PyFJuUKZUh4',
       views: 'Clip officiel',
     },
     {
-      id: 3,
+      id: 'clip-3',
       title: 'Tarhanine (feat. Sidiki Diabaté)',
       year: '2018',
       url: 'https://www.youtube.com/watch?v=pM7sdSJtDgU',
       views: 'Collaboration',
     },
     {
-      id: 4,
+      id: 'clip-4',
       title: 'H MED 45 - la la la ft. KADER TARHANINE',
       year: '2025',
       url: 'https://www.youtube.com/watch?v=-RQ7DgMvtic',
       views: 'Nouveau',
     },
     {
-      id: 5,
+      id: 'clip-5',
       title: 'Inizdiam',
       year: '2023',
       url: 'https://www.youtube.com/watch?v=X_ClhuYqbsM',
       views: 'Mélodie',
     },
     {
-      id: 6,
+      id: 'clip-6',
       title: 'Imanine',
       year: '2019',
       url: 'https://www.youtube.com/watch?v=WJbYL1Zu_0Q',
@@ -103,96 +117,95 @@ const Videos = () => {
     },
   ]
 
-  // Plus de concerts : certains avec ID YouTube, d’autres avec lien de recherche
-  const concertsRaw = [
-    {
-      id: 1,
-      title: 'Roskilde Festival 2024',
-      location: 'Danemark',
-      date: '04.07.2024',
-      url: 'https://www.youtube.com/watch?v=CEmZdbQUueU',
-    },
-    {
-      id: 2,
-      title: 'Rotterdam Bluegrass Festival 2024',
-      location: 'Hollande',
-      date: '30.06.2024',
-      url: 'https://www.youtube.com/watch?v=xOQ69T4uFRU',
-    },
-    {
-      id: 3,
-      title: 'Rudolstadt Festival 2025',
-      location: 'Allemagne',
-      date: '06.07.2025',
-      url: 'https://www.youtube.com/watch?v=7SORkXHJHeg',
-    },
-    {
-      id: 4,
-      title: 'Sfinks Mixed 2025',
-      location: 'Belgique',
-      date: '27.07.2025',
-      url: 'https://www.youtube.com/watch?v=hRZc0j_IYpw',
-    },
-    {
-      id: 5,
-      title: 'Oslo World Festival 2023',
-      location: 'Norvège',
-      date: '01.11.2023',
-      url: 'https://www.youtube.com/results?search_query=Kader+Tarhanine+Oslo+World+Festival+Essakane+Production',
-      thumbnail: 'https://via.placeholder.com/640x360/f97316/ffffff?text=Oslo+World+Festival',
-    },
-    {
-      id: 6,
-      title: 'Taragalte Festival 2024',
-      location: 'Maroc',
-      date: '01.10.2024',
-      url: 'https://www.youtube.com/results?search_query=Kader+Tarhanine+Taragalte+Festival+Essakane+Production',
-      thumbnail: 'https://via.placeholder.com/640x360/f97316/ffffff?text=Taragalte+Festival',
-    },
-    {
-      id: 7,
-      title: 'Timitar Festival',
-      location: 'Agadir, Maroc',
-      date: '01.07.2022',
-      url: 'https://www.youtube.com/results?search_query=Kader+Tarhanine+Timitar+Festival+Essakane+Production',
-      thumbnail: 'https://via.placeholder.com/640x360/f97316/ffffff?text=Timitar+Festival',
-    },
-    {
-      id: 8,
-      title: 'Festival of World Sacred Music',
-      location: 'Fès, Maroc',
-      date: '01.06.2022',
-      url: 'https://www.youtube.com/results?search_query=Kader+Tarhanine+Fes+Sacred+Music+Festival+Essakane+Production',
-      thumbnail: 'https://via.placeholder.com/640x360/f97316/ffffff?text=Fes+Sacred+Music',
-    },
-    {
-      id: 9,
-      title: 'Expo Osaka 2025',
-      location: 'Japon',
-      date: '02.08.2025',
-      url: 'https://www.youtube.com/results?search_query=Kader+Tarhanine+Expo+Osaka+2025+Essakane+Production',
-      thumbnail: 'https://via.placeholder.com/640x360/f97316/ffffff?text=Expo+Osaka+2025',
-    },
-    {
-      id: 10,
-      title: 'African Beats Festival 2025',
-      location: 'Varsovie, Pologne',
-      date: '09.08.2025',
-      url: 'https://www.youtube.com/results?search_query=Kader+Tarhanine+African+Beats+Festival+Warsaw+Essakane+Production',
-      thumbnail: 'https://via.placeholder.com/640x360/f97316/ffffff?text=African+Beats+Festival',
-    },
+  /* ======== CONCERTS — liens fournis (YouTube uniquement) ======== */
+  // Entrée brute, par année avec toutes les URLs
+  const concertsByYear = {
+    2018: [
+      'https://www.youtube.com/watch?v=P7JQ50A2hzw',
+      'https://www.youtube.com/watch?v=-XeXI2l3uCI',
+      'https://www.youtube.com/watch?v=aBDoLCCEO1A',
+      'https://www.youtube.com/watch?v=i9dQmXE1FW0',
+    ],
+    2019: [
+      'https://www.youtube.com/watch?v=8-ipFo9Cv0Y',
+      'https://www.youtube.com/watch?v=Cz0stNeSv4A',
+      'https://www.youtube.com/watch?v=43Oh-jlCfDE',
+    ],
+    2020: [
+      'https://www.youtube.com/watch?v=ldGu37g6Q6w',
+      'https://www.youtube.com/watch?v=JVVMKxFw0xY',
+    ],
+    2021: [
+      'https://www.youtube.com/watch?v=Ih14h8y_TFE',
+      'https://www.youtube.com/watch?v=x8EasewmEq8',
+    ],
+    2022: [
+      'https://www.youtube.com/watch?v=p6SrI9zu-ZQ',
+      'https://www.youtube.com/watch?v=3PO3aH0sse8',
+      'https://www.youtube.com/watch?v=pUaDaOq7pA0',
+      'https://www.youtube.com/watch?v=QlowuQy40Rw',
+    ],
+    2023: [
+      'https://www.youtube.com/watch?v=AhivVaNpDyU',
+      'https://www.youtube.com/watch?v=x75MKprzUcw',
+      'https://www.youtube.com/watch?v=HQXdD8hRovY',
+      'https://www.youtube.com/watch?v=MbTA3PKPI8U',
+      'https://www.youtube.com/watch?v=lPG9HQBdmGI',
+    ],
+    2024: [
+      'https://www.youtube.com/watch?v=xOQ69T4uFRU',
+      'https://www.youtube.com/watch?v=cVLRB2a9D1E',
+      'https://www.youtube.com/watch?v=CEmZdbQUueU',
+      'https://www.youtube.com/watch?v=xEu0KJrFXQE',
+      'https://www.youtube.com/watch?v=tB3ZpMkRnSM',
+      'https://www.youtube.com/live/PSQUVoUoyYE',
+    ],
+    2025: [
+      'https://www.youtube.com/watch?v=msRbmRgY6mc',
+      'https://www.youtube.com/watch?v=hRZc0j_IYpw',
+      'https://www.youtube.com/watch?v=73fLfq8hYSM',
+      'https://www.youtube.com/watch?v=19Z8WbEIi9c',
+      'https://www.youtube.com/watch?v=BrpyDEAWAAg',
+      'https://www.youtube.com/watch?v=2c9RY-8Vd4Y',
+      'https://www.youtube.com/watch?v=wctG2ujPsg4',
+      'https://www.youtube.com/watch?v=njanaBpmVzA',
+      'https://www.youtube.com/watch?v=0uzf_sofWmU',
+      'https://www.youtube.com/watch?v=v3ke6Ay7bcM',
+      'https://www.youtube.com/watch?v=m_BZd3DFywA',
+    ],
+  }
+
+  // Bonus (YouTube seulement ; on ignore dailymotion)
+  const bonus = [
+    'https://www.youtube.com/watch?v=HIEXKQNbxmU',
+    'https://www.youtube.com/watch?v=Dqlj0scphdo',
   ]
 
-  // Tri chronologique (ancien -> récent)
+  // On “aplati” les concerts et on génère des dates techniques DD.MM.YYYY
   const concerts = useMemo(() => {
-    const copy = [...concertsRaw]
-    copy.sort((a, b) => {
-      const da = parseFrDate(a.date)?.getTime() ?? 0
-      const db = parseFrDate(b.date)?.getTime() ?? 0
-      return da - db
+    const rows = []
+    const years = Object.keys(concertsByYear).map((y) => parseInt(y, 10)).sort((a, b) => a - b)
+
+    years.forEach((year) => {
+      const urls = concertsByYear[year].filter((u) => u.includes('youtube.com') || u.includes('youtu.be'))
+      // Pour garder l'ordre d'entrée dans l'année, on incrémente le mois
+      urls.forEach((url, idx) => {
+        const month = String(Math.min(idx + 1, 12)).padStart(2, '0') // 01..12
+        const day = '01'
+        rows.push({
+          id: `c-${year}-${idx}`,
+          title: `Concert Live — ${year}`,
+          location: '—',
+          date: `${day}.${month}.${year}`,
+          url,
+        })
+      })
     })
-    return copy
-  }, [concertsRaw])
+
+    // Tri global chronologique (ancien -> récent)
+    rows.sort((a, b) => (parseDate(a.date)?.getTime() ?? 0) - (parseDate(b.date)?.getTime() ?? 0))
+    return rows
+  }, [])
 
   const openVideo = (url) => window.open(url, '_blank', 'noopener,noreferrer')
 
@@ -250,8 +263,8 @@ const Videos = () => {
           </div>
 
           {/* Concerts Live - ordre chronologique */}
-          <div>
-            <h3 className="text-3xl font-bold mb-8 desert-orange">Concerts Live</h3>
+          <div className="mb-16">
+            <h3 className="text-3xl font-bold mb-8 desert-orange">Concerts Live (chronologique)</h3>
             <div className="grid md:grid-cols-2 gap-8">
               {concerts.map((concert) => {
                 const thumb = getConcertThumb(concert)
@@ -291,6 +304,51 @@ const Videos = () => {
             </div>
           </div>
 
+          {/* Bonus */}
+          {bonus.length > 0 && (
+            <div>
+              <h3 className="text-3xl font-bold mb-8 tuareg-blue">Bonus</h3>
+              <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+                {bonus.map((url, i) => {
+                  const id = getYouTubeId(url)
+                  const thumb = id ? getYouTubeThumb(id, 'max') : 'https://via.placeholder.com/480x270/f97316/ffffff?text=Video'
+                  return (
+                    <Card
+                      key={`bonus-${i}`}
+                      className="overflow-hidden hover-lift group cursor-pointer"
+                      onClick={() => openVideo(url)}
+                    >
+                      <div className="relative">
+                        <img
+                          src={thumb}
+                          alt="Bonus"
+                          className="w-full h-48 object-cover transition-transform duration-300 group-hover:scale-105"
+                          onError={handleThumbError}
+                          loading="lazy"
+                        />
+                        <div className="absolute inset-0 bg-black/40 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                          <div className="bg-orange-600 rounded-full p-4">
+                            <Play size={24} className="text-white ml-1" />
+                          </div>
+                        </div>
+                        <div className="absolute top-4 right-4 bg-slate-800 text-white px-2 py-1 rounded text-xs font-medium">
+                          Bonus
+                        </div>
+                      </div>
+                      <CardContent className="p-4">
+                        <h4 className="font-semibold text-lg mb-2">Performance</h4>
+                        <div className="flex items-center justify-between text-sm text-gray-600">
+                          <span>Chaîne officielle</span>
+                          <Youtube size={16} />
+                        </div>
+                      </CardContent>
+                    </Card>
+                  )
+                })}
+              </div>
+            </div>
+          )}
+
           <div className="text-center mt-12">
             <Button
               onClick={() => window.open('https://www.youtube.com/@EssakaneProduction', '_blank', 'noopener,noreferrer')}
@@ -308,3 +366,6 @@ const Videos = () => {
 }
 
 export default Videos
+```
+
+Si tu veux, on peut enrichir chaque entrée `concertsByYear` (titre précis, ville/pays exacts, date réelle) — tu me donnes les métadonnées et je les insère pour un rendu encore plus “pro” 💪
