@@ -146,9 +146,10 @@ function App() {
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-amber-50 to-orange-50">
-      {/* Navigation */}
+      
+    {/* Navigation */}
 <nav
-  className={`fixed top-0 w-full z-[100] transition-all duration-300 glass-effect ${
+  className={`fixed top-0 w-full z-[120] transition-all duration-300 glass-effect ${
     isScrolled ? 'shadow-lg' : ''
   }`}
 >
@@ -194,7 +195,6 @@ function App() {
         onClick={() => setMobileOpen((v) => !v)}
         className="lg:hidden inline-flex items-center justify-center rounded-md p-2 text-slate-700 hover:bg-white/30 focus:outline-none focus:ring-2 focus:ring-white/60"
       >
-        {/* Icône burger / croix en SVG pour ne pas dépendre d’un autre pkg */}
         {!mobileOpen ? (
           <svg viewBox="0 0 24 24" className="h-6 w-6" fill="currentColor">
             <path d="M3 6h18M3 12h18M3 18h18" />
@@ -208,18 +208,19 @@ function App() {
     </div>
   </div>
 
-  {/* Overlay (clic pour fermer) */}
+  {/* Overlay sombre pour lisibilité */}
   <div
-    className={`lg:hidden fixed inset-0 bg-black/40 transition-opacity ${
+    className={`lg:hidden fixed inset-0 z-[100] bg-black/60 backdrop-blur-sm transition-opacity ${
       mobileOpen ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'
     }`}
     onClick={() => setMobileOpen(false)}
   />
 
-  {/* Panneau mobile */}
+  {/* Drawer mobile lisible (fond opaque + blur) */}
   <div
-    className={`lg:hidden fixed top-0 right-0 h-full w-[80%] max-w-xs bg-white shadow-2xl z-[110] transition-transform duration-300
-      ${mobileOpen ? 'translate-x-0' : 'translate-x-full'}`}
+    className={`lg:hidden fixed top-0 right-0 z-[110] h-full w-[80%] max-w-xs
+      bg-white/95 backdrop-blur-xl text-slate-800 shadow-2xl border-l border-slate-200
+      transition-transform duration-300 ${mobileOpen ? 'translate-x-0' : 'translate-x-full'}`}
     role="dialog"
     aria-modal="true"
   >
@@ -250,9 +251,7 @@ function App() {
                   setMobileOpen(false)
                 }}
                 className={`flex items-center gap-3 rounded-lg px-4 py-3 transition ${
-                  isActive
-                    ? 'bg-orange-50 text-orange-700'
-                    : 'text-slate-700 hover:bg-slate-50'
+                  isActive ? 'bg-orange-50 text-orange-700' : 'text-slate-800 hover:bg-slate-50'
                 }`}
               >
                 <Icon size={18} />
@@ -263,7 +262,7 @@ function App() {
         })}
       </ul>
 
-      {/* CTA rapides en bas du panneau */}
+      {/* CTA rapides */}
       <div className="mt-6 grid grid-cols-2 gap-3">
         <a
           href="#musique"
@@ -275,25 +274,41 @@ function App() {
         <a
           href="#concerts"
           onClick={() => setMobileOpen(false)}
-          className="text-center rounded-full border border-slate-300 text-slate-700 px-4 py-3 text-sm font-medium hover:bg-slate-50"
+          className="text-center rounded-full border border-slate-300 text-slate-800 px-4 py-3 text-sm font-medium hover:bg-slate-50"
         >
           Concerts
         </a>
       </div>
 
-      {/* Liens sociaux (optionnel) */}
-      <div className="mt-8 flex items-center gap-4 px-4 text-slate-600">
-        <a href="https://www.youtube.com" target="_blank" rel="noopener noreferrer" className="hover:text-slate-900">
+      {/* Liens sociaux (corrigés) */}
+      <div className="mt-8 flex items-center gap-5 px-4 text-slate-700">
+        <a
+          href="https://www.youtube.com/@kadertarhanineofficial3970"  /* YouTube officiel (à ajuster si besoin) */
+          target="_blank"
+          rel="noopener noreferrer"
+          className="hover:text-slate-900"
+        >
           <Youtube size={22} />
         </a>
-        <a href="https://www.instagram.com/kadertarhanine" target="_blank" rel="noopener noreferrer" className="hover:text-slate-900">
+        <a
+          href="https://www.instagram.com/kadertarhanine"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="hover:text-slate-900"
+        >
           <Instagram size={22} />
         </a>
-        <a href="mailto:contact@kadertarhanine.com" className="hover:text-slate-900">
+        <a
+          href="mailto:contact@kadertarhanine.com"
+          className="hover:text-slate-900"
+        >
           <Mail size={22} />
         </a>
       </div>
     </nav>
+  </div>
+</nav>
+
   </div>
 </nav>
 
