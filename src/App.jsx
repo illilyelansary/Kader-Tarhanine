@@ -3,14 +3,27 @@ import React, { useState, useEffect } from 'react'
 import { Button } from '@/components/ui/button.jsx'
 import { Card, CardContent } from '@/components/ui/card.jsx'
 import {
-  Music, Play, Calendar, MapPin, Instagram, Youtube, Mail, Guitar, Camera, Video, Users, Menu as MenuIcon, X, ExternalLink
+  Music,
+  Play,
+  Calendar,
+  MapPin,
+  Instagram,
+  Youtube,
+  Mail,
+  Guitar,
+  Camera,
+  Video,
+  Users,
+  Menu as MenuIcon,
+  X,
+  ExternalLink
 } from 'lucide-react'
 import Gallery from './components/Gallery.jsx'
 import Videos from './components/Videos.jsx'
 import SocialFeeds from './components/SocialFeeds.jsx'
 import './App.css'
 
-// Import des images
+// Images locales
 import kaderPhoto from './assets/4enTSMYZjml8.jpg'
 import desertLandscape from './assets/mH0NU1PYe0fM.jpg'
 import tuaregMusicians from './assets/sgxiVNQXFkDF.jpg'
@@ -26,7 +39,7 @@ function App() {
     return () => window.removeEventListener('scroll', handleScroll)
   }, [])
 
-  // Gère navigation directe via #hash (rafraîchissement / lien externe)
+  // Gère l’ancre #hash au rechargement / lien direct
   useEffect(() => {
     const hash = window.location.hash
     if (hash) {
@@ -56,22 +69,30 @@ function App() {
     const element = document.getElementById(sectionId)
     if (element) {
       element.scrollIntoView({ behavior: 'smooth' })
-      // Ferme le menu mobile après le clic
-      setMobileOpen(false)
-      // Met à jour l’URL avec l’ancre (utile pour partage/lien direct)
-      window.history.replaceState(null, '', `#${sectionId}`)
+      setMobileOpen(false) // ferme drawer mobile
+      window.history.replaceState(null, '', `#${sectionId}`) // met à jour l’URL
     }
   }
 
   const openLink = (url) => window.open(url, '_blank', 'noopener,noreferrer')
 
+  // Singles / Clips (listés dans la section Musique — les clips détaillés s’affichent dans <Videos />)
+  const singles = [
+    { title: 'la la la (H MED 45 ft. Kader Tarhanine)', meta: 'Collaboration • 2025', youtube: 'https://www.youtube.com/watch?v=-RQ7DgMvtic' },
+    { title: 'Zain Assahra (feat. Mouna Dendenni)', meta: 'Single • 2024', youtube: 'https://www.youtube.com/watch?v=PyFJuUKZUh4' },
+    { title: 'Aliad Idja Ehane', meta: 'Single • 2024', youtube: 'https://www.youtube.com/watch?v=PyFJuUKZUh4' },
+    { title: 'Meddane Taknassam (feat. Bombino)', meta: 'Single • 2024', youtube: 'https://www.youtube.com/watch?v=PyFJuUKZUh4' },
+    { title: 'Inizdiam', meta: 'Clip • 2023', youtube: 'https://www.youtube.com/watch?v=X_ClhuYqbsM' },
+    { title: 'Algamra Leila', meta: 'Clip • 2019', youtube: 'https://www.youtube.com/watch?v=Sp0Fn4VI1yQ' },
+    { title: 'Imanine', meta: 'Clip (Ikewane) • 2019', youtube: 'https://www.youtube.com/watch?v=WJbYL1Zu_0Q' },
+    { title: 'Tarhanine (feat. Sidiki Diabaté)', meta: 'Collaboration • 2018', youtube: 'https://www.youtube.com/watch?v=pM7sdSJtDgU' }
+  ]
+
   return (
     <div className="min-h-screen bg-gradient-to-b from-amber-50 to-orange-50">
-      {/* Navigation */}
+      {/* NAVBAR */}
       <nav
-        className={`fixed top-0 w-full z-50 transition-all duration-300 ${
-          isScrolled ? 'glass-effect shadow-lg' : 'bg-transparent'
-        }`}
+        className={`fixed top-0 w-full z-50 transition-all duration-300 ${isScrolled ? 'glass-effect shadow-lg' : 'bg-transparent'}`}
       >
         <div className="container mx-auto px-6 py-4">
           <div className="flex items-center justify-between">
@@ -86,7 +107,7 @@ function App() {
               Kader Tarhanine
             </a>
 
-            {/* Desktop nav */}
+            {/* Desktop */}
             <div className="hidden lg:flex space-x-6">
               {navigation.map((item) => {
                 const Icon = item.icon
@@ -119,17 +140,16 @@ function App() {
         </div>
       </nav>
 
-      {/* Drawer Mobile plein écran avec fond dégradé lisible */}
+      {/* Drawer Mobile plein écran */}
       {mobileOpen && (
         <div className="fixed inset-0 z-50">
-          {/* Couche fond sombre en dégradé + flou */}
+          {/* overlay */}
           <div
             className="absolute inset-0 bg-gradient-to-b from-black/95 via-black/80 to-black/60 backdrop-blur-md"
             onClick={() => setMobileOpen(false)}
           />
-          {/* Panneau contenu centré */}
+          {/* contenu */}
           <div className="relative z-10 h-full w-full flex flex-col items-center justify-between py-10">
-            {/* En-tête close */}
             <div className="w-full flex items-center justify-between px-6">
               <div className="text-white/90 text-lg font-semibold">Menu</div>
               <button
@@ -141,7 +161,6 @@ function App() {
               </button>
             </div>
 
-            {/* Liens */}
             <div className="flex-1 w-full flex flex-col items-center justify-center space-y-3 px-6">
               {navigation.map((item) => {
                 const Icon = item.icon
@@ -151,10 +170,8 @@ function App() {
                     key={item.id}
                     onClick={() => scrollToSection(item.id)}
                     className={`w-full max-w-sm flex items-center justify-between px-5 py-3 rounded-xl border transition-all duration-200
-                      ${isActive
-                        ? 'bg-white/15 border-white/30 text-orange-300'
-                        : 'bg-white/10 border-white/20 text-white'
-                      }`}
+                      ${isActive ? 'bg-white/15 border-white/30 text-orange-300' : 'bg-white/10 border-white/20 text-white'}
+                    `}
                   >
                     <span className="flex items-center space-x-3">
                       <Icon size={18} />
@@ -166,7 +183,7 @@ function App() {
               })}
             </div>
 
-            {/* Réseaux sociaux (vrais liens) */}
+            {/* Liens sociaux officiels */}
             <div className="w-full px-6">
               <div className="max-w-sm mx-auto grid grid-cols-3 gap-3">
                 <a
@@ -195,15 +212,13 @@ function App() {
                   <span className="text-sm">Email</span>
                 </a>
               </div>
-              <p className="text-center text-white/60 text-xs mt-4">
-                Suivez l’artiste • Liens officiels
-              </p>
+              <p className="text-center text-white/60 text-xs mt-4">Suivez l’artiste • Liens officiels</p>
             </div>
           </div>
         </div>
       )}
 
-      {/* Section Hero */}
+      {/* HERO */}
       <section id="accueil" className="hero-section flex items-center justify-center relative pt-24">
         <div
           className="absolute inset-0 parallax-bg opacity-30"
@@ -239,53 +254,41 @@ function App() {
         </div>
       </section>
 
-      {/* Section À propos (encadré moderne avec motifs) */}
+      {/* A PROPOS — encadré simple, propre */}
       <section id="apropos" className="py-20 bg-white">
         <div className="container mx-auto px-6">
           <div className="max-w-6xl mx-auto">
-            <h2 className="text-5xl font-bold text-center mb-10 tuareg-blue">À propos</h2>
-
-            <div className="relative rounded-2xl p-8 md:p-12 overflow-hidden border border-amber-200">
-              {/* Motifs (icônes musique) en fond discret */}
-              <div className="pointer-events-none absolute inset-0 opacity-10"
-                   style={{
-                     backgroundImage:
-                       'radial-gradient(circle at 20% 20%, #E67E22 2px, transparent 2px), radial-gradient(circle at 40% 80%, #2C3E50 2px, transparent 2px), radial-gradient(circle at 80% 30%, #E67E22 2px, transparent 2px)',
-                     backgroundSize: '120px 120px'
-                   }}
-              />
-              <div className="relative grid md:grid-cols-2 gap-10 items-center">
-                <div className="space-y-6">
-                  <h3 className="text-3xl font-semibold desert-orange">L'artiste le plus écouté du Sahara</h3>
-                  <p className="text-lg text-gray-700 leading-relaxed">
-                    Né en 1989 à Borj Moctar en Algérie, Kader Tarhanine (Abd Elkadir Sabou) incarne la nouvelle génération
-                    de la musique touarègue. Ses origines nomades du Sahara (Mali/Algérie/Niger) transparaissent dans chaque note.
-                  </p>
-                  <p className="text-lg text-gray-700 leading-relaxed">
-                    Leader du groupe éponyme (souvent appelé Afous d'Afous), il est devenu l’une des voix les plus suivies
-                    par la jeunesse saharienne, alliant modernité, poésie et talent naturel.
-                  </p>
-                  <p className="text-lg text-gray-700 leading-relaxed">
-                    Sa musique marie rythmes traditionnels et tonalités rock sur des paroles poétiques sahéliennes et arabophones,
-                    créant un pont unique entre tradition et modernité.
-                  </p>
-                </div>
-                <div className="relative">
-                  <img
-                    src={tuaregMusicians}
-                    alt="Musiciens Touaregs"
-                    className="rounded-xl shadow-2xl hover-lift"
-                  />
-                  <div className="absolute -bottom-6 -right-6 w-32 h-32 desert-gradient rounded-full opacity-20"></div>
-                </div>
+            <h2 className="text-5xl font-bold text-center mb-16 tuareg-blue">À propos</h2>
+            <div className="grid md:grid-cols-2 gap-12 items-center">
+              <div className="space-y-6 p-6 rounded-2xl border border-amber-200 bg-white shadow-sm">
+                <h3 className="text-3xl font-semibold desert-orange">L'artiste le plus écouté du Sahara</h3>
+                <p className="text-lg text-gray-700 leading-relaxed">
+                  Né en 1989 à Borj Moctar (Algérie), Kader Tarhanine (Abd Elkadir Sabou) incarne la nouvelle génération
+                  de la musique touarègue. Ses racines nomades du Sahara (Mali/Algérie/Niger) se ressentent dans chaque note.
+                </p>
+                <p className="text-lg text-gray-700 leading-relaxed">
+                  Leader du groupe éponyme, souvent associé à Afous d’Afous, il est une voix phare pour la jeunesse saharienne,
+                  unissant modernité, poésie et talent naturel.
+                </p>
+                <p className="text-lg text-gray-700 leading-relaxed">
+                  Sa musique marie rythmes traditionnels et tonalités rock sur des paroles poétiques sahéliennes et arabophones,
+                  créant un pont vivant entre tradition et modernité.
+                </p>
+              </div>
+              <div className="relative">
+                <img
+                  src={tuaregMusicians}
+                  alt="Musiciens Touaregs"
+                  className="rounded-xl shadow-2xl hover-lift"
+                />
+                <div className="absolute -bottom-6 -right-6 w-32 h-32 desert-gradient rounded-full opacity-20"></div>
               </div>
             </div>
-
           </div>
         </div>
       </section>
 
-      {/* Section Musique */}
+      {/* MUSIQUE — Albums + Singles (liens YouTube/plateformes) */}
       <section id="musique" className="py-20 bg-gradient-to-r from-amber-100 to-orange-100">
         <div className="container mx-auto px-6">
           <div className="max-w-6xl mx-auto">
@@ -301,66 +304,79 @@ function App() {
                         <h4 className="font-semibold">Ikewane</h4>
                         <p className="text-gray-600">Album • 2019</p>
                       </div>
-                      <Button
-                        size="sm"
-                        className="bg-orange-600 hover:bg-orange-700"
-                        onClick={() => openLink('https://open.spotify.com/intl-fr/album/4khQAqdVbydwxkGmCTixu7')}
-                        aria-label="Écouter Ikewane sur Spotify"
-                      >
-                        <Play size={16} />
-                      </Button>
+                      <div className="flex gap-2">
+                        <Button
+                          size="sm"
+                          className="bg-orange-600 hover:bg-orange-700"
+                          onClick={() => openLink('https://open.spotify.com/intl-fr/album/4khQAqdVbydwxkGmCTixu7')}
+                          aria-label="Écouter Ikewane sur Spotify"
+                        >
+                          <Play size={16} />
+                        </Button>
+                        <Button
+                          size="sm"
+                          variant="outline"
+                          onClick={() => openLink('https://music.apple.com/fr/artist/kader-tarhanine/1391675149')}
+                          aria-label="Voir sur Apple Music"
+                        >
+                          Apple
+                        </Button>
+                      </div>
                     </div>
+
                     <div className="flex items-center justify-between p-4 bg-white rounded-lg shadow">
                       <div>
                         <h4 className="font-semibold">Tenere</h4>
                         <p className="text-gray-600">Album • 2017</p>
                       </div>
-                      <Button
-                        size="sm"
-                        className="bg-orange-600 hover:bg-orange-700"
-                        onClick={() => openLink('https://open.spotify.com/intl-fr/album/3M1ibb7qJILS8kiI5rXTl3')}
-                        aria-label="Écouter Tenere sur Spotify"
-                      >
-                        <Play size={16} />
-                      </Button>
+                      <div className="flex gap-2">
+                        <Button
+                          size="sm"
+                          className="bg-orange-600 hover:bg-orange-700"
+                          onClick={() => openLink('https://open.spotify.com/intl-fr/album/3M1ibb7qJILS8kiI5rXTl3')}
+                          aria-label="Écouter Tenere sur Spotify"
+                        >
+                          <Play size={16} />
+                        </Button>
+                        <Button
+                          size="sm"
+                          variant="outline"
+                          onClick={() => openLink('https://music.apple.com/fr/artist/kader-tarhanine/1391675149')}
+                          aria-label="Voir sur Apple Music"
+                        >
+                          Apple
+                        </Button>
+                      </div>
                     </div>
                   </div>
                 </CardContent>
               </Card>
 
-              {/* Singles récents (exemples) */}
+              {/* Singles / Clips */}
               <Card className="hover-lift">
                 <CardContent className="p-8">
                   <h3 className="text-2xl font-bold mb-4 desert-orange">Singles / Clips</h3>
                   <div className="space-y-4">
-                    <div className="flex items-center justify-between p-4 bg-white rounded-lg shadow">
-                      <div>
-                        <h4 className="font-semibold">Aliad Idja Ehane</h4>
-                        <p className="text-gray-600">Single • 2024</p>
+                    {singles.map((s, i) => (
+                      <div key={i} className="flex items-center justify-between p-4 bg-white rounded-lg shadow">
+                        <div>
+                          <h4 className="font-semibold">{s.title}</h4>
+                          <p className="text-gray-600">{s.meta}</p>
+                        </div>
+                        <div className="flex gap-2">
+                          {s.youtube && (
+                            <Button
+                              size="sm"
+                              className="bg-red-600 hover:bg-red-700"
+                              onClick={() => openLink(s.youtube)}
+                              aria-label={`Voir ${s.title} sur YouTube`}
+                            >
+                              <Youtube size={16} />
+                            </Button>
+                          )}
+                        </div>
                       </div>
-                      <Button
-                        size="sm"
-                        className="bg-orange-600 hover:bg-orange-700"
-                        onClick={() => openLink('https://www.youtube.com/watch?v=PyFJuUKZUh4')}
-                        aria-label="Voir Aliad Idja Ehane sur YouTube"
-                      >
-                        <Play size={16} />
-                      </Button>
-                    </div>
-                    <div className="flex items-center justify-between p-4 bg-white rounded-lg shadow">
-                      <div>
-                        <h4 className="font-semibold">Algamra Leila</h4>
-                        <p className="text-gray-600">Clip • 2019</p>
-                      </div>
-                      <Button
-                        size="sm"
-                        className="bg-orange-600 hover:bg-orange-700"
-                        onClick={() => openLink('https://www.youtube.com/watch?v=Sp0Fn4VI1yQ')}
-                        aria-label="Voir Algamra Leila sur YouTube"
-                      >
-                        <Play size={16} />
-                      </Button>
-                    </div>
+                    ))}
                   </div>
                 </CardContent>
               </Card>
@@ -400,12 +416,13 @@ function App() {
         </div>
       </section>
 
-      {/* Section Concerts (exemple cohérent et propre) */}
+      {/* CONCERTS & FESTIVALS (exemple propre) */}
       <section id="concerts" className="py-20 bg-white">
         <div className="container mx-auto px-6">
           <div className="max-w-6xl mx-auto">
             <h2 className="text-5xl font-bold text-center mb-16 tuareg-blue">Concerts & Festivals</h2>
             <div className="grid md:grid-cols-2 gap-8">
+              {/* Prochains */}
               <Card className="hover-lift">
                 <CardContent className="p-8">
                   <h3 className="text-2xl font-bold mb-6 desert-orange">Prochains concerts</h3>
@@ -428,6 +445,7 @@ function App() {
                 </CardContent>
               </Card>
 
+              {/* Récents */}
               <Card className="hover-lift">
                 <CardContent className="p-8">
                   <h3 className="text-2xl font-bold mb-6 desert-orange">Festivals récents</h3>
@@ -440,10 +458,10 @@ function App() {
                       </p>
                     </div>
                     <div className="border-l-4 border-blue-500 pl-6">
-                      <h4 className="font-semibold text-lg">Rotterdam Bluegrass Festival</h4>
+                      <h4 className="font-semibold text-lg">Sfinks Mixed</h4>
                       <p className="text-gray-600 flex items-center mt-2">
                         <MapPin size={16} className="mr-2" />
-                        Pays-Bas • 30 juin 2024
+                        Belgique • 27 juillet 2025
                       </p>
                     </div>
                     <div className="border-l-4 border-blue-500 pl-6">
@@ -451,6 +469,13 @@ function App() {
                       <p className="text-gray-600 flex items-center mt-2">
                         <MapPin size={16} className="mr-2" />
                         Danemark • 4 juillet 2024
+                      </p>
+                    </div>
+                    <div className="border-l-4 border-blue-500 pl-6">
+                      <h4 className="font-semibold text-lg">Rotterdam Bluegrass Festival</h4>
+                      <p className="text-gray-600 flex items-center mt-2">
+                        <MapPin size={16} className="mr-2" />
+                        Pays-Bas • 30 juin 2024
                       </p>
                     </div>
                   </div>
@@ -461,18 +486,18 @@ function App() {
         </div>
       </section>
 
-      {/* Section Galerie (composant externe) */}
+      {/* GALERIE */}
       <Gallery />
 
-      {/* Section Vidéos (composant externe, déjà enrichi) */}
+      {/* VIDEOS (concerts + clips gérés dans le composant) */}
       <Videos />
 
-      {/* Section Réseaux Sociaux (composant externe) */}
+      {/* RÉSEAUX SOCIAUX */}
       <section id="reseaux-sociaux">
         <SocialFeeds />
       </section>
 
-      {/* Section Contact (ajout booking + bouton cliquable) */}
+      {/* CONTACT + BOOKING */}
       <section id="contact" className="py-20 bg-gradient-to-r from-slate-800 to-slate-900 text-white">
         <div className="container mx-auto px-6">
           <div className="max-w-4xl mx-auto text-center">
@@ -506,10 +531,7 @@ function App() {
               <div className="space-y-2">
                 <Mail size={48} className="mx-auto text-blue-500" />
                 <h3 className="text-xl font-semibold">Booking</h3>
-                <a
-                  href="mailto:booking@kadertarhanine.com"
-                  className="text-gray-300 underline"
-                >
+                <a href="mailto:booking@kadertarhanine.com" className="text-gray-300 underline">
                   booking@kadertarhanine.com
                 </a>
               </div>
@@ -529,7 +551,7 @@ function App() {
         </div>
       </section>
 
-      {/* Footer */}
+      {/* FOOTER */}
       <footer className="bg-black text-white py-8">
         <div className="container mx-auto px-6 text-center">
           <p className="text-gray-400">© 2025 Kader Tarhanine. Tous droits réservés.</p>
