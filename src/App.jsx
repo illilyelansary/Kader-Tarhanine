@@ -58,7 +58,7 @@ function App() {
 
   const openLink = (url) => window.open(url, '_blank', 'noopener,noreferrer')
 
-  // Music links
+  // ===== Liens Artiste / Albums
   const LINKS = {
     artist: {
       spotify: 'https://open.spotify.com/intl-fr/artist/7Et5H8GXkBE3F2nFolwyPV?si=Qi4y6vPwRoC54CcOiggnIA',
@@ -68,14 +68,22 @@ function App() {
     albums: {
       Ikewane: 'https://open.spotify.com/intl-fr/album/4khQAqdVbydwxkGmCTixu7?si=32VisFb8SQK7QlOjd7Dz3A',
       Tenere:  'https://open.spotify.com/intl-fr/album/3M1ibb7qJILS8kiI5rXTl3?si=dyIauVB7S9i1XlmUANrCYQ'
-    },
-    singles: {
-      'Aliad Idja Ehane': 'https://www.youtube.com/watch?v=xxxxxxxxxxx',
-      'Meddane Taknassam (feat. Bombino)': 'https://www.youtube.com/watch?v=yyyyyyyyyyy'
     }
   }
 
-  // Events (concerts & festivals)
+  // ===== Singles officiels (YouTube / Essakane Production) — triés du plus récent au plus ancien
+  // Ajoute/ajuste les dates si tu publies de nouveaux singles
+  const SINGLES = [
+    { title: 'Aliad Idja Ehane', date: '2024-09-01', url: 'https://www.youtube.com/watch?v=AOtoOIzTUl8', note: 'Audio officiel' },
+    { title: 'Zain Assahra (feat. Mouna Dendenni)', date: '2024-03-01', url: 'https://www.youtube.com/watch?v=PyFJuUKZUh4', note: 'Clip officiel' },
+    { title: 'Meddane Taknassam', date: '2024-01-01', url: 'https://www.youtube.com/watch?v=ALch4yaE7_g', note: 'Audio officiel' },
+    { title: 'Inizdiam', date: '2023-02-01', url: 'https://www.youtube.com/watch?v=X_ClhuYqbsM', note: 'Clip officiel' },
+    { title: 'Algamra Leila', date: '2019-08-23', url: 'https://www.youtube.com/watch?v=Sp0Fn4VI1yQ', note: 'Clip officiel' },
+    { title: 'Imanine', date: '2019-01-01', url: 'https://www.youtube.com/watch?v=WJbYL1Zu_0Q', note: 'Clip officiel' },
+    { title: 'Tarhanine (feat. Sidiki Diabaté)', date: '2018-04-30', url: 'https://www.youtube.com/watch?v=pM7sdSJtDgU', note: 'Clip officiel' }
+  ].sort((a, b) => new Date(b.date) - new Date(a.date))
+
+  // ===== Events (concerts & festivals)
   const EVENTS = [
     { title: 'Expo Osaka 2025', city: 'Osaka', country: 'Japon', dateISO: '2025-08-02', kind: 'concert' },
     { title: 'African Beats Festival', city: 'Varsovie', country: 'Pologne', dateISO: '2025-08-09', kind: 'festival' },
@@ -259,7 +267,7 @@ function App() {
               </a>
             </div>
 
-            {/* Social links (correct) */}
+            {/* Social links */}
             <div className="mt-8 flex items-center gap-5 px-4 text-white/90">
               <a
                 href="https://www.youtube.com/@kadertarhanine"
@@ -324,18 +332,10 @@ function App() {
           <div className="max-w-5xl mx-auto">
             <h2 className="text-5xl font-bold text-center mb-12 tuareg-blue">À propos</h2>
 
-            <div
-              className="
-                relative overflow-hidden rounded-2xl
-                bg-white shadow-xl border border-amber-200
-              "
-            >
+            <div className="relative overflow-hidden rounded-2xl bg-white shadow-xl border border-amber-200">
               {/* motif musical discret en fond (SVG data-uri) */}
               <div
-                className="
-                  absolute inset-0 opacity-10 pointer-events-none
-                  bg-[length:20px_20px]
-                "
+                className="absolute inset-0 opacity-10 pointer-events-none bg-[length:20px_20px]"
                 style={{
                   backgroundImage:
                     "url(\"data:image/svg+xml,%3Csvg width='40' height='40' viewBox='0 0 24 24' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M6 4v10.2a2.8 2.8 0 1 0 1.6 2.6V8.5H17V4H6z' stroke='%23E67E22' stroke-width='1.2'/%3E%3C/svg%3E\")"
@@ -373,7 +373,7 @@ function App() {
                         alt="Musiciens Tuareg"
                         className="w-full h-64 object-cover"
                       />
-                      {/* coins décorés (icône musique) */}
+                      {/* coins décorés */}
                       <div className="absolute top-2 left-2">
                         <div className="rounded-full bg-white/90 shadow p-2">
                           <Music size={18} className="text-orange-600" />
@@ -433,29 +433,31 @@ function App() {
                 </CardContent>
               </Card>
 
-              {/* Singles */}
+              {/* Singles dynamiques (Essakane Production) */}
               <Card className="hover-lift">
                 <CardContent className="p-8">
-                  <h3 className="text-2xl font-bold mb-4 desert-orange">Singles récents</h3>
+                  <h3 className="text-2xl font-bold mb-4 desert-orange">Singles</h3>
                   <div className="space-y-4">
-                    <div className="flex items-center justify-between p-4 bg-white rounded-lg shadow">
-                      <div>
-                        <h4 className="font-semibold">Aliad Idja Ehane</h4>
-                        <p className="text-gray-600">Single • 2024</p>
+                    {SINGLES.map((s) => (
+                      <div key={s.title} className="flex items-center justify-between p-4 bg-white rounded-lg shadow">
+                        <div>
+                          <h4 className="font-semibold">{s.title}</h4>
+                          <p className="text-gray-600">
+                            Single • {new Date(s.date).toLocaleDateString('fr-FR', { year: 'numeric', month: 'short' })}
+                          </p>
+                          {s.note && <p className="text-xs text-gray-500 mt-1">{s.note}</p>}
+                        </div>
+                        <Button
+                          size="sm"
+                          className="bg-orange-600 hover:bg-orange-700"
+                          onClick={() => openLink(s.url)}
+                          aria-label={`Lire ${s.title} sur YouTube`}
+                          title="Ouvrir sur YouTube"
+                        >
+                          <Play size={16} />
+                        </Button>
                       </div>
-                      <Button size="sm" className="bg-orange-600 hover:bg-orange-700" onClick={() => openLink(LINKS.singles['Aliad Idja Ehane'])}>
-                        <Play size={16} />
-                      </Button>
-                    </div>
-                    <div className="flex items-center justify-between p-4 bg-white rounded-lg shadow">
-                      <div>
-                        <h4 className="font-semibold">Meddane Taknassam (feat. Bombino)</h4>
-                        <p className="text-gray-600">Single • 2024</p>
-                      </div>
-                      <Button size="sm" className="bg-orange-600 hover:bg-orange-700" onClick={() => openLink(LINKS.singles['Meddane Taknassam (feat. Bombino)'])}>
-                        <Play size={16} />
-                      </Button>
-                    </div>
+                    ))}
                   </div>
                 </CardContent>
               </Card>
@@ -520,17 +522,16 @@ function App() {
         </div>
       </section>
 
-      {/* ================= GALERIE (nouveau composant: slider + miniatures) ================= */}
+      {/* ================= GALERIE (slider + miniatures) ================= */}
       <Gallery
         id="galerie"
         images={[
           { src: desertLandscape, alt: 'Désert saharien' },
           { src: kaderPhoto, alt: 'Portrait Kader Tarhanine' },
           { src: tuaregMusicians, alt: 'Musiciens touaregs' },
-          // tu peux en ajouter d’autres ici…
         ]}
         autoplayInterval={3000}
-        heightClass="h-[60vh]"  // ajuste la hauteur du slider principal
+        heightClass="h-[60vh]"
       />
 
       {/* ================= VIDÉOS ================= */}
