@@ -1,5 +1,5 @@
 // src/App.jsx
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useMemo } from 'react'
 import { Button } from '@/components/ui/button.jsx'
 import { Card, CardContent } from '@/components/ui/card.jsx'
 import {
@@ -87,6 +87,104 @@ function App() {
     { title: 'Imanine', meta: 'Clip (Ikewane) • 2019', youtube: 'https://www.youtube.com/watch?v=WJbYL1Zu_0Q' },
     { title: 'Tarhanine (feat. Sidiki Diabaté)', meta: 'Collaboration • 2018', youtube: 'https://www.youtube.com/watch?v=pM7sdSJtDgU' }
   ]
+
+  /**
+   * CONCERTS & FESTIVALS — Données vérifiées (2024 → 2026)
+   * On garde tout au même endroit pour mise à jour simple.
+   * Chaque entrée = { date: 'YYYY-MM-DD', title, city, country, note?, url? }
+   *
+   * NB : La section se segmente toute seule en "à venir" / "passés" selon la date du jour.
+   */
+  const events = [
+    // 2026 (à venir)
+    {
+      date: '2026-07-02',
+      title: 'Rudolstadt Festival',
+      city: 'Rudolstadt', country: 'Allemagne',
+      note: 'Festival (2–5 juillet 2026)',
+      url: 'https://www.rudolstadt-festival.de/en/program/artistdetail/kader-tarhanine.html'
+    },
+
+    // 2025
+    {
+      date: '2025-08-09',
+      title: 'African Beats Festival',
+      city: 'Kawęczyn (Varsovie)', country: 'Pologne',
+      note: 'Concert à 18:00',
+      url: 'https://africanbeats.pl/program-2025/'
+    },
+    {
+      date: '2025-08-02',
+      title: 'Expo Osaka 2025 — Journée du Mali',
+      city: 'Osaka', country: 'Japon',
+      note: 'Show Journée nationale du Mali',
+      url: 'https://maliactu.net/expo-universelle-osaka-2025-mali-a-lhonneur-avec-une-journee-speciale/'
+    },
+    {
+      date: '2025-07-27',
+      title: 'Sfinks Mixed',
+      city: 'Boechout', country: 'Belgique',
+      note: 'Concert à 17:00',
+      url: 'https://www.sfinks.be/artist/kader-tarhanine/'
+    },
+    {
+      date: '2025-07-06',
+      title: 'Rudolstadt Festival',
+      city: 'Rudolstadt', country: 'Allemagne',
+      note: 'Show festival',
+      url: 'https://avanzert.com/concert/kader-tarhanine-rudolstadt-festival-2025-07-06/'
+    },
+
+    // 2024 (passés récents)
+    {
+      date: '2024-07-27',
+      title: "Théâtre de l'Orangerie",
+      city: 'Genève', country: 'Suisse',
+      note: 'Concert',
+      url: 'https://leprogramme.ch/concerts/kader-tarhanine'
+    },
+    {
+      date: '2024-07-06',
+      title: 'Festival Tunis sur Seine',
+      city: 'Aubervilliers (Paris)', country: 'France',
+      note: 'Festival',
+      url: 'https://www.box.fr/fiche/ktyb-kader-tarhanine-benboo-1/2588923'
+    },
+    {
+      date: '2024-07-04',
+      title: 'Roskilde Festival',
+      city: 'Roskilde', country: 'Danemark',
+      note: 'GAIA Stage',
+      url: 'https://www.setlist.fm/setlist/kader-tarhanine/2024/dyrskuepladsen-roskilde-denmark-1357d1a1.html'
+    },
+    {
+      date: '2024-07-02',
+      title: 'Sala Upload',
+      city: 'Barcelone', country: 'Espagne',
+      note: 'Concert',
+      url: 'https://dice.fm/event/ry2wvy-kader-tarhanine-2nd-jul-sala-upload-barcelona-tickets?lng=fr'
+    },
+    {
+      date: '2024-06-30',
+      title: 'Rotterdam Bluegrass Festival',
+      city: 'Rotterdam', country: 'Pays-Bas',
+      note: 'Festival',
+      url: 'https://www.setlist.fm/setlist/kader-tarhanine/2024/noordplein-rotterdam-netherlands-6b5782ee.html'
+    }
+  ]
+
+  // Tri et séparation (ordre chrono croissant dans chaque bloc)
+  const { upcoming, past } = useMemo(() => {
+    const today = new Date()
+    const ordered = [...events].sort((a, b) => new Date(a.date) - new Date(b.date))
+    const up = ordered.filter(e => new Date(e.date) >= new Date(today.toDateString()))
+    const pa = ordered.filter(e => new Date(e.date) < new Date(today.toDateString()))
+    return { upcoming: up, past: pa }
+  }, [JSON.stringify(events)])
+
+  // Formateur de date lisible (ex: 27 juillet 2025)
+  const formatDate = (iso) =>
+    new Date(iso).toLocaleDateString('fr-FR', { day: '2-digit', month: 'long', year: 'numeric' })
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-amber-50 to-orange-50">
@@ -416,72 +514,77 @@ function App() {
         </div>
       </section>
 
-      {/* CONCERTS & FESTIVALS (exemple propre) */}
+      {/* CONCERTS & FESTIVALS — version enrichie */}
       <section id="concerts" className="py-20 bg-white">
         <div className="container mx-auto px-6">
           <div className="max-w-6xl mx-auto">
             <h2 className="text-5xl font-bold text-center mb-16 tuareg-blue">Concerts & Festivals</h2>
+
             <div className="grid md:grid-cols-2 gap-8">
-              {/* Prochains */}
+              {/* À venir */}
               <Card className="hover-lift">
                 <CardContent className="p-8">
                   <h3 className="text-2xl font-bold mb-6 desert-orange">Prochains concerts</h3>
+
+                  {upcoming.length === 0 && (
+                    <div className="p-4 rounded-lg bg-amber-50 border border-amber-200 text-amber-800">
+                      Aucune date publique annoncée. Revenez bientôt !
+                    </div>
+                  )}
+
                   <div className="space-y-6">
-                    <div className="border-l-4 border-orange-500 pl-6">
-                      <h4 className="font-semibold text-lg">Expo Osaka 2025</h4>
-                      <p className="text-gray-600 flex items-center mt-2">
-                        <MapPin size={16} className="mr-2" />
-                        Osaka, Japon • 2 août 2025
-                      </p>
-                    </div>
-                    <div className="border-l-4 border-orange-500 pl-6">
-                      <h4 className="font-semibold text-lg">African Beats Festival</h4>
-                      <p className="text-gray-600 flex items-center mt-2">
-                        <MapPin size={16} className="mr-2" />
-                        Varsovie, Pologne • 9 août 2025
-                      </p>
-                    </div>
+                    {upcoming.map((e, idx) => (
+                      <div key={idx} className="border-l-4 border-orange-500 pl-6">
+                        <h4 className="font-semibold text-lg">{e.title}</h4>
+                        <p className="text-gray-600 flex items-center mt-2">
+                          <MapPin size={16} className="mr-2" />
+                          {e.city}, {e.country} • {formatDate(e.date)}
+                        </p>
+                        {e.note && <p className="text-sm text-gray-500 mt-1">{e.note}</p>}
+                        {e.url && (
+                          <div className="mt-3">
+                            <Button size="sm" variant="outline" onClick={() => openLink(e.url)}>
+                              Détails <ExternalLink size={14} className="ml-1" />
+                            </Button>
+                          </div>
+                        )}
+                      </div>
+                    ))}
                   </div>
                 </CardContent>
               </Card>
 
-              {/* Récents */}
+              {/* Récents & passés */}
               <Card className="hover-lift">
                 <CardContent className="p-8">
-                  <h3 className="text-2xl font-bold mb-6 desert-orange">Festivals récents</h3>
+                  <h3 className="text-2xl font-bold mb-6 desert-orange">Festivals récents & passés</h3>
                   <div className="space-y-6">
-                    <div className="border-l-4 border-blue-500 pl-6">
-                      <h4 className="font-semibold text-lg">Rudolstadt Festival</h4>
-                      <p className="text-gray-600 flex items-center mt-2">
-                        <MapPin size={16} className="mr-2" />
-                        Allemagne • 6 juillet 2025
-                      </p>
-                    </div>
-                    <div className="border-l-4 border-blue-500 pl-6">
-                      <h4 className="font-semibold text-lg">Sfinks Mixed</h4>
-                      <p className="text-gray-600 flex items-center mt-2">
-                        <MapPin size={16} className="mr-2" />
-                        Belgique • 27 juillet 2025
-                      </p>
-                    </div>
-                    <div className="border-l-4 border-blue-500 pl-6">
-                      <h4 className="font-semibold text-lg">Roskilde Festival</h4>
-                      <p className="text-gray-600 flex items-center mt-2">
-                        <MapPin size={16} className="mr-2" />
-                        Danemark • 4 juillet 2024
-                      </p>
-                    </div>
-                    <div className="border-l-4 border-blue-500 pl-6">
-                      <h4 className="font-semibold text-lg">Rotterdam Bluegrass Festival</h4>
-                      <p className="text-gray-600 flex items-center mt-2">
-                        <MapPin size={16} className="mr-2" />
-                        Pays-Bas • 30 juin 2024
-                      </p>
-                    </div>
+                    {past.map((e, idx) => (
+                      <div key={idx} className="border-l-4 border-blue-500 pl-6">
+                        <h4 className="font-semibold text-lg">{e.title}</h4>
+                        <p className="text-gray-600 flex items-center mt-2">
+                          <MapPin size={16} className="mr-2" />
+                          {e.city}, {e.country} • {formatDate(e.date)}
+                        </p>
+                        {e.note && <p className="text-sm text-gray-500 mt-1">{e.note}</p>}
+                        {e.url && (
+                          <div className="mt-3">
+                            <Button size="sm" variant="outline" onClick={() => openLink(e.url)}>
+                              Voir la source <ExternalLink size={14} className="ml-1" />
+                            </Button>
+                          </div>
+                        )}
+                      </div>
+                    ))}
                   </div>
                 </CardContent>
               </Card>
             </div>
+
+            {/* Légende tri */}
+            <p className="text-center text-sm text-gray-500 mt-6">
+              Listes triées par ordre chronologique (dates à venir puis dates passées).
+            </p>
           </div>
         </div>
       </section>
