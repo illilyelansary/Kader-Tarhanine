@@ -72,12 +72,6 @@ const concerts = [
     location: 'Bamako, Mali',
     url: 'https://www.youtube.com/watch?v=Cz0stNeSv4A',
   },
-  {
-    year: 2019,
-    title: 'Concert à Paris',
-    location: 'France',
-    url: 'https://www.youtube.com/watch?v=43Oh-jlCfDE',
-  },
 
   /* === 2020 === */
   {
@@ -94,12 +88,7 @@ const concerts = [
   },
 
   /* === 2021 === */
-  {
-    year: 2021,
-    title: 'Concert Live in Dubai',
-    location: 'Émirats arabes unis',
-    url: 'https://www.youtube.com/watch?v=Ih14h8y_TFE',
-  },
+
   {
     year: 2021,
     title: 'Concert à Bamako',
@@ -253,22 +242,22 @@ const concerts = [
     url: 'https://www.youtube.com/watch?v=njanaBpmVzA',
   },
   {
-    year: 2025,
+    year: 2017,
     title: 'Concert dans un camp de réfugiés',
     location: 'Mauritanie',
     url: 'https://www.youtube.com/watch?v=0uzf_sofWmU',
   },
   {
-    year: 2025,
+    year: 2022,
     title: 'Concert Mauritanie (reportage)',
     location: 'Mauritanie',
     url: 'https://www.youtube.com/watch?v=v3ke6Ay7bcM',
   },
   {
-    year: 2025,
+    year: 2022,
     title: 'Expo 2020 Dubaï',
     location: 'Émirats arabes unis',
-    url: 'https://www.youtube.com/watch?v=m_BZd3DFywA',
+    url: 'https://www.youtube.com/watch?v=CC2GrFMiJUA&t=48s',
   },
 ]
 
