@@ -10,7 +10,7 @@ import Videos from './components/Videos.jsx'
 import SocialFeeds from './components/SocialFeeds.jsx'
 import './App.css'
 
-// Images
+// Images locales
 import kaderPhoto from './assets/4enTSMYZjml8.jpg'
 import desertLandscape from './assets/mH0NU1PYe0fM.jpg'
 import tuaregMusicians from './assets/sgxiVNQXFkDF.jpg'
@@ -20,14 +20,14 @@ function App() {
   const [isScrolled, setIsScrolled] = useState(false)
   const [mobileOpen, setMobileOpen] = useState(false)
 
-  // Scroll state (nav shadow)
+  // Ombre nav au scroll
   useEffect(() => {
     const handleScroll = () => setIsScrolled(window.scrollY > 50)
     window.addEventListener('scroll', handleScroll)
     return () => window.removeEventListener('scroll', handleScroll)
   }, [])
 
-  // Deep link support (#hash)
+  // Support des ancres (#hash)
   useEffect(() => {
     const hash = window.location.hash
     if (hash) {
@@ -37,7 +37,7 @@ function App() {
     }
   }, [])
 
-  // Nav items
+  // Menu
   const navigation = [
     { id: 'accueil', label: 'Accueil', icon: Music },
     { id: 'apropos', label: 'À propos', icon: Guitar },
@@ -58,7 +58,7 @@ function App() {
 
   const openLink = (url) => window.open(url, '_blank', 'noopener,noreferrer')
 
-  // ===== Liens Artiste / Albums
+  // Liens artiste / albums
   const LINKS = {
     artist: {
       spotify: 'https://open.spotify.com/intl-fr/artist/7Et5H8GXkBE3F2nFolwyPV?si=Qi4y6vPwRoC54CcOiggnIA',
@@ -71,8 +71,7 @@ function App() {
     }
   }
 
-  // ===== Singles officiels (YouTube / Essakane Production) — triés du plus récent au plus ancien
-  // Ajoute/ajuste les dates si tu publies de nouveaux singles
+  // Singles Essakane (tri récents -> anciens)
   const SINGLES = [
     { title: 'Aliad Idja Ehane', date: '2024-09-01', url: 'https://www.youtube.com/watch?v=AOtoOIzTUl8', note: 'Audio officiel' },
     { title: 'Zain Assahra (feat. Mouna Dendenni)', date: '2024-03-01', url: 'https://www.youtube.com/watch?v=PyFJuUKZUh4', note: 'Clip officiel' },
@@ -83,7 +82,7 @@ function App() {
     { title: 'Tarhanine (feat. Sidiki Diabaté)', date: '2018-04-30', url: 'https://www.youtube.com/watch?v=pM7sdSJtDgU', note: 'Clip officiel' }
   ].sort((a, b) => new Date(b.date) - new Date(a.date))
 
-  // ===== Events (concerts & festivals)
+  // Événements
   const EVENTS = [
     { title: 'Expo Osaka 2025', city: 'Osaka', country: 'Japon', dateISO: '2025-08-02', kind: 'concert' },
     { title: 'African Beats Festival', city: 'Varsovie', country: 'Pologne', dateISO: '2025-08-09', kind: 'festival' },
@@ -132,16 +131,16 @@ function App() {
     up.sort(compareAscByDate)
     past.sort(compareDescByDate)
     return { upcomingEvents: up, pastEvents: past }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [EVENTS, today])
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-amber-50 to-orange-50">
-      {/* ================= NAVIGATION (Desktop + Mobile Drawer sombre) ================= */}
+      {/* ================= NAVIGATION ================= */}
       <nav className={'fixed top-0 w-full z-[120] transition-all duration-300 ' + (isScrolled ? 'glass-effect shadow-lg' : 'glass-effect')}>
         <div className="container mx-auto px-6 py-4">
           <div className="flex items-center justify-between">
-            {/* Logo / Brand */}
+            {/* Logo */}
             <a
               href="#accueil"
               onClick={(e) => { e.preventDefault(); scrollToSection('accueil') }}
@@ -150,7 +149,7 @@ function App() {
               Kader Tarhanine
             </a>
 
-            {/* Desktop menu */}
+            {/* Desktop */}
             <div className="hidden lg:flex space-x-6">
               {navigation.map((item) => {
                 const Icon = item.icon
@@ -172,7 +171,7 @@ function App() {
               })}
             </div>
 
-            {/* Mobile hamburger */}
+            {/* Burger mobile */}
             <button
               type="button"
               aria-label="Ouvrir le menu"
@@ -193,7 +192,7 @@ function App() {
           </div>
         </div>
 
-        {/* Overlay for drawer */}
+        {/* Overlay */}
         <div
           className={
             'lg:hidden fixed inset-0 z-[100] bg-black/70 backdrop-blur-sm transition-opacity ' +
@@ -202,23 +201,24 @@ function App() {
           onClick={() => setMobileOpen(false)}
         />
 
-        {/* Drawer panel (SOMBRE + LISIBLE) */}
+        {/* Drawer mobile : fond sombre + bande translucide lisible */}
         <div
           className={
-            'lg:hidden fixed top-0 right-0 z-[110] h-full w-[80%] max-w-xs ' +
-            'bg-slate-900/95 backdrop-blur-xl text-white shadow-2xl border-l border-slate-800 ' +
+            'lg:hidden fixed top-0 right-0 z-[110] h-full w-[88%] max-w-sm ' +
+            'bg-slate-900/95 text-white shadow-2xl border-l border-slate-800 ' +
             'transition-transform duration-300 ' +
             (mobileOpen ? 'translate-x-0' : 'translate-x-full')
           }
           role="dialog"
           aria-modal="true"
         >
-          <div className="p-4 border-b border-slate-700 flex items-center justify-between">
+          {/* Header drawer */}
+          <div className="p-4 border-b border-slate-800 flex items-center justify-between">
             <span className="text-lg font-semibold">Menu</span>
             <button
               aria-label="Fermer le menu"
               onClick={() => setMobileOpen(false)}
-              className="p-2 rounded-md hover:bg-slate-800"
+              className="p-2 rounded-md hover:bg-white/10"
             >
               <svg viewBox="0 0 24 24" className="h-6 w-6" fill="currentColor">
                 <path d="M6 18L18 6M6 6l12 12" />
@@ -226,76 +226,85 @@ function App() {
             </button>
           </div>
 
-          <nav className="p-4">
-            <ul className="space-y-2">
-              {navigation.map((item) => {
-                const Icon = item.icon
-                const isActive = activeSection === item.id
-                return (
-                  <li key={item.id}>
-                    <a
-                      href={'#' + item.id}
-                      onClick={(e) => { e.preventDefault(); scrollToSection(item.id) }}
-                      className={
-                        'flex items-center gap-3 rounded-lg px-4 py-3 transition ' +
-                        (isActive ? 'bg-orange-600 text-white' : 'hover:bg-slate-800')
-                      }
-                    >
-                      <Icon size={18} />
-                      <span className="text-base">{item.label}</span>
-                    </a>
-                  </li>
-                )
-              })}
-            </ul>
+          {/* Contenu */}
+          <div className="h-full overflow-y-auto pb-6">
+            <div className="px-4 pt-4">
+              <div className="rounded-2xl bg-white/15 backdrop-blur-xl border border-white/15 p-3">
+                <nav>
+                  <ul className="space-y-2">
+                    {navigation.map((item) => {
+                      const Icon = item.icon
+                      const isActive = activeSection === item.id
+                      return (
+                        <li key={item.id}>
+                          <a
+                            href={'#' + item.id}
+                            onClick={(e) => { e.preventDefault(); scrollToSection(item.id) }}
+                            className={
+                              'flex items-center gap-3 rounded-xl px-4 py-3 text-[15px] font-medium transition ' +
+                              (isActive
+                                ? 'bg-orange-600 text-white'
+                                : 'text-white hover:bg-white/10')
+                            }
+                          >
+                            <Icon size={18} />
+                            <span>{item.label}</span>
+                          </a>
+                        </li>
+                      )
+                    })}
+                  </ul>
+                </nav>
 
-            {/* Quick CTAs */}
-            <div className="mt-6 grid grid-cols-2 gap-3">
-              <a
-                href="#musique"
-                onClick={(e) => { e.preventDefault(); scrollToSection('musique') }}
-                className="text-center rounded-full bg-orange-600 text-white px-4 py-3 text-sm font-medium hover:bg-orange-700"
-              >
-                Écouter
-              </a>
-              <a
-                href="#concerts"
-                onClick={(e) => { e.preventDefault(); scrollToSection('concerts') }}
-                className="text-center rounded-full border border-slate-600 text-white px-4 py-3 text-sm font-medium hover:bg-slate-800"
-              >
-                Concerts
-              </a>
-            </div>
+                {/* CTAs rapides */}
+                <div className="mt-4 grid grid-cols-2 gap-3">
+                  <a
+                    href="#musique"
+                    onClick={(e) => { e.preventDefault(); scrollToSection('musique') }}
+                    className="text-center rounded-full bg-orange-600 text-white px-4 py-3 text-sm font-semibold hover:bg-orange-700"
+                  >
+                    Écouter
+                  </a>
+                  <a
+                    href="#concerts"
+                    onClick={(e) => { e.preventDefault(); scrollToSection('concerts') }}
+                    className="text-center rounded-full bg-white/10 text-white px-4 py-3 text-sm font-semibold hover:bg-white/20"
+                  >
+                    Concerts
+                  </a>
+                </div>
 
-            {/* Social links */}
-            <div className="mt-8 flex items-center gap-5 px-4 text-white/90">
-              <a
-                href="https://www.youtube.com/@kadertarhanine"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="hover:text-white"
-                aria-label="YouTube"
-              >
-                <Youtube size={22} />
-              </a>
-              <a
-                href="https://www.instagram.com/kadertarhanine"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="hover:text-white"
-                aria-label="Instagram"
-              >
-                <Instagram size={22} />
-              </a>
-              <a
-                href="mailto:contact@kadertarhanine.com"
-                className="hover:text-white"
-                aria-label="Email"
-              >
-                <Mail size={22} />
-              </a>
+                {/* Réseaux sociaux */}
+                <div className="mt-5 flex items-center gap-5 px-1 text-white/90">
+                  <a
+                    href="https://www.youtube.com/@kadertarhanine"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="hover:text-white"
+                    aria-label="YouTube"
+                  >
+                    <Youtube size={22} />
+                  </a>
+                  <a
+                    href="https://www.instagram.com/kadertarhanine"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="hover:text-white"
+                    aria-label="Instagram"
+                  >
+                    <Instagram size={22} />
+                  </a>
+                  <a
+                    href="mailto:contact@kadertarhanine.com"
+                    className="hover:text-white"
+                    aria-label="Email"
+                  >
+                    <Mail size={22} />
+                  </a>
+                </div>
+              </div>
             </div>
-          </nav>
+          </div>
         </div>
       </nav>
       {/* ================= /NAV ================= */}
@@ -326,14 +335,14 @@ function App() {
         </div>
       </section>
 
-      {/* ================= À PROPOS (encadré moderne + motifs musique) ================= */}
+      {/* ================= À PROPOS ================= */}
       <section id="apropos" className="py-20 bg-white">
         <div className="container mx-auto px-6">
           <div className="max-w-5xl mx-auto">
             <h2 className="text-5xl font-bold text-center mb-12 tuareg-blue">À propos</h2>
 
             <div className="relative overflow-hidden rounded-2xl bg-white shadow-xl border border-amber-200">
-              {/* motif musical discret en fond (SVG data-uri) */}
+              {/* Motif musical discret (SVG data-URI) */}
               <div
                 className="absolute inset-0 opacity-10 pointer-events-none bg-[length:20px_20px]"
                 style={{
@@ -341,8 +350,6 @@ function App() {
                     "url(\"data:image/svg+xml,%3Csvg width='40' height='40' viewBox='0 0 24 24' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M6 4v10.2a2.8 2.8 0 1 0 1.6 2.6V8.5H17V4H6z' stroke='%23E67E22' stroke-width='1.2'/%3E%3C/svg%3E\")"
                 }}
               />
-
-              {/* bandeau dégradé fin en haut */}
               <div className="h-2 w-full bg-gradient-to-r from-amber-400 via-orange-500 to-amber-400" />
 
               <div className="relative p-8 md:p-12">
@@ -373,7 +380,6 @@ function App() {
                         alt="Musiciens Tuareg"
                         className="w-full h-64 object-cover"
                       />
-                      {/* coins décorés */}
                       <div className="absolute top-2 left-2">
                         <div className="rounded-full bg-white/90 shadow p-2">
                           <Music size={18} className="text-orange-600" />
@@ -388,7 +394,6 @@ function App() {
                   </div>
                 </div>
 
-                {/* bas d'encadré : petite ligne décorative */}
                 <div className="mt-10 flex items-center gap-2 text-orange-600/80">
                   <span className="h-[2px] w-12 bg-orange-500 rounded-full" />
                   <span className="text-sm tracking-wide">Desert Blues • Tamasheq • Moderne</span>
@@ -433,7 +438,7 @@ function App() {
                 </CardContent>
               </Card>
 
-              {/* Singles dynamiques (Essakane Production) */}
+              {/* Singles dynamiques (Essakane) */}
               <Card className="hover-lift">
                 <CardContent className="p-8">
                   <h3 className="text-2xl font-bold mb-4 desert-orange">Singles</h3>
@@ -522,17 +527,9 @@ function App() {
         </div>
       </section>
 
-      {/* ================= GALERIE (slider + miniatures) ================= */}
-      <Gallery
-        id="galerie"
-        images={[
-          { src: desertLandscape, alt: 'Désert saharien' },
-          { src: kaderPhoto, alt: 'Portrait Kader Tarhanine' },
-          { src: tuaregMusicians, alt: 'Musiciens touaregs' },
-        ]}
-        autoplayInterval={3000}
-        heightClass="h-[60vh]"
-      />
+      {/* ================= GALERIE ================= */}
+      {/* Le composant Gallery.jsx gère le slider + miniatures et charge ses images internes */}
+      <Gallery />
 
       {/* ================= VIDÉOS ================= */}
       <Videos />
@@ -556,7 +553,7 @@ function App() {
                 </a>
               </div>
 
-              {/* Management / Contact général */}
+              {/* Management / Contact */}
               <div className="space-y-4">
                 <h3 className="text-2xl font-semibold text-orange-400">Management</h3>
                 <p className="text-gray-300">Pour les collaborations, médias et infos générales</p>
