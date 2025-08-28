@@ -87,6 +87,22 @@ const Videos = () => {
       thumbnail: 'https://img.youtube.com/vi/-RQ7DgMvtic/maxresdefault.jpg',
       views: 'Nouveau',
     },
+    {
+      id: 5,
+      title: 'Inizdiam',
+      year: '2023',
+      url: 'https://www.youtube.com/watch?v=X_ClhuYqbsM',
+      thumbnail: 'https://img.youtube.com/vi/-RQ7DgMvtic/maxresdefault.jpg',
+      views: 'Melodie',
+    },
+      {
+      id: 6,
+      title: 'Imanine',
+      year: '2019',
+      url: 'https://www.youtube.com/watch?v=WJbYL1Zu_0Q',
+      thumbnail: 'https://img.youtube.com/vi/-RQ7DgMvtic/maxresdefault.jpg',
+      views: 'Clip Officiel de l'Album Ikewane',
+    },
   ]
 
   const concerts = [
