@@ -63,18 +63,6 @@ const clips = [
     url: 'https://www.youtube.com/watch?v=PyFJuUKZUh4',
     note: 'Single'
   },
-  {
-    year: 2024,
-    title: 'Aliad Idja Ehane',
-    url: 'https://www.youtube.com/watch?v=PyFJuUKZUh4',
-    note: 'Single'
-  },
-  {
-    year: 2024,
-    title: 'Meddane Taknassam (feat. Bombino)',
-    url: 'https://www.youtube.com/watch?v=PyFJuUKZUh4',
-    note: 'Single'
-  },
   // 2025 (collab)
   {
     year: 2025,
@@ -95,14 +83,12 @@ const concerts = [
   /* === 2019 === */
   { year: 2019, title: 'Festival Oued Eddahab', location: 'Dakhla, Maroc', url: 'https://www.youtube.com/watch?v=8-ipFo9Cv0Y' },
   { year: 2019, title: 'Concert avec le groupe Tartit', location: 'Bamako, Mali', url: 'https://www.youtube.com/watch?v=Cz0stNeSv4A' },
-  { year: 2019, title: 'Concert à Paris', location: 'France', url: 'https://www.youtube.com/watch?v=43Oh-jlCfDE' },
 
   /* === 2020 === */
   { year: 2020, title: 'Festival AG’Na', location: 'Koulikoro, Mali', url: 'https://www.youtube.com/watch?v=ldGu37g6Q6w' },
   { year: 2020, title: 'Concert – Tous ensemble contre le COVID', location: 'Mali', url: 'https://www.youtube.com/watch?v=JVVMKxFw0xY' },
 
   /* === 2021 === */
-  { year: 2021, title: 'Concert Live in Dubai', location: 'Émirats arabes unis', url: 'https://www.youtube.com/watch?v=Ih14h8y_TFE' },
   { year: 2021, title: 'Concert à Bamako', location: 'Mali', url: 'https://www.youtube.com/watch?v=x8EasewmEq8' },
 
   /* === 2022 === */
@@ -131,7 +117,6 @@ const concerts = [
   { year: 2025, title: 'Sfinks Mixed Festival', location: 'Boechout, Belgique', url: 'https://www.youtube.com/watch?v=hRZc0j_IYpw' },
   { year: 2025, title: 'Musica Mundo Festival', location: 'Amersfoort, Pays-Bas', url: 'https://www.youtube.com/watch?v=73fLfq8hYSM' },
   { year: 2025, title: 'Rudolstadt-Festival — autre captation', location: 'Allemagne', url: 'https://www.youtube.com/watch?v=19Z8WbEIi9c' },
-  { year: 2025, title: 'Sfinks Mixed Festival — autre angle', location: 'Belgique', url: 'https://www.youtube.com/watch?v=BrpyDEAWAAg' },
   { year: 2025, title: 'World Stage Concert', location: 'Palanga, Lituanie', url: 'https://www.youtube.com/watch?v=2c9RY-8Vd4Y' },
   { year: 2025, title: 'Soirée diaspora touareg', location: 'Europe', url: 'https://www.youtube.com/watch?v=wctG2ujPsg4' },
   { year: 2025, title: 'Rencontre diaspora touareg', location: 'Maghreb', url: 'https://www.youtube.com/watch?v=njanaBpmVzA' },
