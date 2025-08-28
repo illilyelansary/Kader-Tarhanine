@@ -403,22 +403,47 @@ function App() {
       {/* Section Réseaux sociaux */}
       <SocialFeeds />
 
-      {/* Section Contact */}
-      <section id="contact" className="py-20 bg-gradient-to-r from-slate-800 to-slate-900 text-white">
-        <div className="container mx-auto px-6 text-center">
-          <h2 className="text-5xl font-bold mb-12">Contact</h2>
-          <p className="text-lg text-gray-300 mb-8">contact@kadertarhanine.com</p>
-          <Button className="bg-orange-600 hover:bg-orange-700 text-white px-8 py-3 text-lg rounded-full hover-lift">
-            <Mail className="mr-2" size={20} /> Nous contacter
-          </Button>
-        </div>
-      </section>
+     {/* Section Contact */}
+<section id="contact" className="py-20 bg-gradient-to-r from-slate-800 to-slate-900 text-white">
+  <div className="container mx-auto px-6 text-center">
+    <h2 className="text-5xl font-bold mb-12">Contact</h2>
+
+    <div className="grid md:grid-cols-2 gap-12 mb-12">
+      {/* Booking */}
+      <div className="space-y-4">
+        <h3 className="text-2xl font-semibold text-orange-400">Booking</h3>
+        <p className="text-gray-300">Pour les demandes de concerts et tournées</p>
+        <a href="mailto:booking@kadertarhanine.com" className="text-lg text-orange-300 hover:underline">
+          booking@kadertarhanine.com
+        </a>
+      </div>
+
+      {/* Management / Contact général */}
+      <div className="space-y-4">
+        <h3 className="text-2xl font-semibold text-orange-400">Management</h3>
+        <p className="text-gray-300">Pour les collaborations, médias et infos générales</p>
+        <a href="mailto:contact@kadertarhanine.com" className="text-lg text-orange-300 hover:underline">
+          contact@kadertarhanine.com
+        </a>
+      </div>
+    </div>
+
+    {/* Bouton cliquable */}
+    <a
+      href="mailto:contact@kadertarhanine.com"
+      className="inline-flex items-center bg-orange-600 hover:bg-orange-700 text-white px-8 py-3 text-lg rounded-full hover-lift transition-all"
+    >
+      <Mail className="mr-2" size={20} />
+      Nous contacter
+    </a>
+  </div>
+</section>
 
       {/* Footer */}
       <footer className="bg-black text-white py-8">
         <div className="container mx-auto px-6 text-center">
           <p className="text-gray-400">© 2025 Kader Tarhanine. Tous droits réservés.</p>
-          <p className="text-gray-500 mt-2">Prince du Desert Blues • Musique Tuareg Moderne</p>
+          <p className="text-gray-500 mt-2">Prince du Desert Blues • Musique Touareg Moderne</p>
         </div>
       </footer>
     </div>
