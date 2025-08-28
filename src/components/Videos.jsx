@@ -101,7 +101,7 @@ const Videos = () => {
       year: '2019',
       url: 'https://www.youtube.com/watch?v=WJbYL1Zu_0Q',
       thumbnail: 'https://img.youtube.com/vi/-RQ7DgMvtic/maxresdefault.jpg',
-      views: 'Clip Officiel de l'Album Ikewane',
+      views: 'Clip Officiel de Ikewane',
     },
   ]
 
