@@ -259,10 +259,10 @@ function App() {
                   <h3 className="text-3xl font-semibold desert-orange">L'artiste le plus écouté du Sahara</h3>
                   <p className="text-lg text-gray-700 leading-relaxed">
                     Né en 1989 à Borj Moctar en Algérie, Kader Tarhanine (Abd Elkadir Sabou) incarne la nouvelle génération
-                    de la musique touarègue. Ses origines nomades du Sahara (Ménaka, Mali) transparaissent dans chaque note.
+                    de la musique touarègue. Ses origines nomades du Sahara (Mali/Algérie/Niger) transparaissent dans chaque note.
                   </p>
                   <p className="text-lg text-gray-700 leading-relaxed">
-                    Leader du groupe éponyme (souvent associé à Afous d'Afous), il est devenu l’une des voix les plus suivies
+                    Leader du groupe éponyme (souvent appelé Afous d'Afous), il est devenu l’une des voix les plus suivies
                     par la jeunesse saharienne, alliant modernité, poésie et talent naturel.
                   </p>
                   <p className="text-lg text-gray-700 leading-relaxed">
