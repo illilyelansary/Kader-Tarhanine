@@ -1,26 +1,16 @@
-Parfait ! Voici **`src/components/Videos.jsx`** complet, prêt à coller.
-Il intègre **toutes les vidéos de concerts** que tu as fournies (Uniquement YouTube, chaînes officielles supposées : *Kader Tarhanine Official* / *Essakane Production*), **triées chronologiquement** (ancien → récent).
-J’ai gardé tes **Clips officiels** et la logique de **miniatures automatiques**.
-
-> Notes :
->
-> * Quand la date précise n’est pas connue, je génère une date **technique** au sein de l’année (01.mm.YYYY) pour assurer un tri stable — l’ordre **dans l’année** respecte l’ordre que tu as donné.
-> * Les **bonus** sont affichés dans une section séparée, sans contrainte chronologique.
-> * Le lien Dailymotion a été **ignoré** (tu as demandé “seulement YouTube officiel”).
-
-```jsx
 // src/components/Videos.jsx
 import React, { useMemo } from 'react'
 import { Card, CardContent } from '@/components/ui/card.jsx'
 import { Button } from '@/components/ui/button.jsx'
 import { Play, Youtube, ExternalLink } from 'lucide-react'
 
-/* ---------- Helpers YouTube ---------- */
+/* -------------------- Helpers YouTube -------------------- */
 const getYouTubeId = (url = '') => {
   // Gère: https://www.youtube.com/watch?v=ID, https://youtu.be/ID, shorts
   const match =
     url.match(/(?:youtube\.com.*[?&]v=|youtu\.be\/)([a-zA-Z0-9_-]{11})/) ||
-    url.match(/youtube\.com\/shorts\/([a-zA-Z0-9_-]{11})/)
+    url.match(/youtube\.com\/shorts\/([a-zA-Z0-9_-]{11})/) ||
+    url.match(/youtube\.com\/live\/([a-zA-Z0-9_-]{11})/)
   return match ? match[1] : null
 }
 
@@ -44,7 +34,7 @@ const handleThumbError = (e) => {
   }
 }
 
-/* ---------- Helpers Concerts ---------- */
+/* -------------------- Helpers Concerts -------------------- */
 const handleConcertThumbError = (e) => {
   const src = e.currentTarget.getAttribute('src') || ''
   if (src.includes('maxresdefault')) {
@@ -69,7 +59,7 @@ const parseDate = (d = '') => {
   return new Date(yyyy, mm - 1, dd)
 }
 
-/* ---------- Données ---------- */
+/* -------------------- Données -------------------- */
 const Videos = () => {
   /* CLIPS OFFICIELS — tu peux compléter si besoin */
   const clips = [
@@ -117,7 +107,7 @@ const Videos = () => {
     },
   ]
 
-  /* ======== CONCERTS — liens fournis (YouTube uniquement) ======== */
+  /* ======== CONCERTS — URLs YouTube fournies ======== */
   // Entrée brute, par année avec toutes les URLs
   const concertsByYear = {
     2018: [
@@ -175,7 +165,7 @@ const Videos = () => {
     ],
   }
 
-  // Bonus (YouTube seulement ; on ignore dailymotion)
+  // Bonus (YouTube seulement ; Dailymotion ignoré)
   const bonus = [
     'https://www.youtube.com/watch?v=HIEXKQNbxmU',
     'https://www.youtube.com/watch?v=Dqlj0scphdo',
@@ -192,12 +182,15 @@ const Videos = () => {
       urls.forEach((url, idx) => {
         const month = String(Math.min(idx + 1, 12)).padStart(2, '0') // 01..12
         const day = '01'
+        const id = getYouTubeId(url)
         rows.push({
           id: `c-${year}-${idx}`,
           title: `Concert Live — ${year}`,
           location: '—',
           date: `${day}.${month}.${year}`,
           url,
+          // miniatures automatiques si ID ok
+          thumbnail: id ? getYouTubeThumb(id, 'max') : undefined,
         })
       })
     })
@@ -366,6 +359,3 @@ const Videos = () => {
 }
 
 export default Videos
-```
-
-Si tu veux, on peut enrichir chaque entrée `concertsByYear` (titre précis, ville/pays exacts, date réelle) — tu me donnes les métadonnées et je les insère pour un rendu encore plus “pro” 💪
