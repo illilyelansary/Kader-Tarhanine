@@ -15,6 +15,7 @@ import tuaregMusicians from './assets/sgxiVNQXFkDF.jpg'
 function App() {
   const [activeSection, setActiveSection] = useState('accueil')
   const [isScrolled, setIsScrolled] = useState(false)
+  const [mobileOpen, setMobileOpen] = useState(false) // ⬅️ AJOUT
 
   // --- NAV scroll state
   useEffect(() => {
@@ -146,31 +147,155 @@ function App() {
   return (
     <div className="min-h-screen bg-gradient-to-b from-amber-50 to-orange-50">
       {/* Navigation */}
-      <nav className={`fixed top-0 w-full z-50 transition-all duration-300 glass-effect ${isScrolled ? 'shadow-lg' : ''}`}>
-        <div className="container mx-auto px-6 py-4">
-          <div className="flex items-center justify-between">
-            <div className="text-2xl font-bold tuareg-blue">Kader Tarhanine</div>
-            <div className="hidden lg:flex space-x-6">
-              {navigation.map((item) => {
-                const Icon = item.icon
-                return (
-                  <a
-                    key={item.id}
-                    href={`#${item.id}`}
-                    onClick={() => setActiveSection(item.id)}
-                    className={`flex items-center space-x-2 px-3 py-2 rounded-lg transition-all duration-300 hover:bg-white/20 text-sm ${
-                      activeSection === item.id ? 'bg-white/30 text-orange-600' : 'text-slate-700'
-                    }`}
-                  >
-                    <Icon size={16} />
-                    <span>{item.label}</span>
-                  </a>
-                )
-              })}
-            </div>
-          </div>
-        </div>
-      </nav>
+<nav
+  className={`fixed top-0 w-full z-[100] transition-all duration-300 glass-effect ${
+    isScrolled ? 'shadow-lg' : ''
+  }`}
+>
+  <div className="container mx-auto px-6 py-4">
+    <div className="flex items-center justify-between">
+      {/* Branding */}
+      <a
+        href="#accueil"
+        onClick={() => {
+          setActiveSection('accueil')
+          setMobileOpen(false)
+        }}
+        className="text-2xl font-bold tuareg-blue"
+      >
+        Kader Tarhanine
+      </a>
+
+      {/* Menu desktop */}
+      <div className="hidden lg:flex space-x-6">
+        {navigation.map((item) => {
+          const Icon = item.icon
+          return (
+            <a
+              key={item.id}
+              href={`#${item.id}`}
+              onClick={() => setActiveSection(item.id)}
+              className={`flex items-center space-x-2 px-3 py-2 rounded-lg transition-all duration-300 hover:bg-white/20 text-sm ${
+                activeSection === item.id ? 'bg-white/30 text-orange-600' : 'text-slate-700'
+              }`}
+            >
+              <Icon size={16} />
+              <span>{item.label}</span>
+            </a>
+          )
+        })}
+      </div>
+
+      {/* Bouton hamburger (mobile) */}
+      <button
+        type="button"
+        aria-label="Ouvrir le menu"
+        aria-expanded={mobileOpen}
+        onClick={() => setMobileOpen((v) => !v)}
+        className="lg:hidden inline-flex items-center justify-center rounded-md p-2 text-slate-700 hover:bg-white/30 focus:outline-none focus:ring-2 focus:ring-white/60"
+      >
+        {/* Icône burger / croix en SVG pour ne pas dépendre d’un autre pkg */}
+        {!mobileOpen ? (
+          <svg viewBox="0 0 24 24" className="h-6 w-6" fill="currentColor">
+            <path d="M3 6h18M3 12h18M3 18h18" />
+          </svg>
+        ) : (
+          <svg viewBox="0 0 24 24" className="h-6 w-6" fill="currentColor">
+            <path d="M6 18L18 6M6 6l12 12" />
+          </svg>
+        )}
+      </button>
+    </div>
+  </div>
+
+  {/* Overlay (clic pour fermer) */}
+  <div
+    className={`lg:hidden fixed inset-0 bg-black/40 transition-opacity ${
+      mobileOpen ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'
+    }`}
+    onClick={() => setMobileOpen(false)}
+  />
+
+  {/* Panneau mobile */}
+  <div
+    className={`lg:hidden fixed top-0 right-0 h-full w-[80%] max-w-xs bg-white shadow-2xl z-[110] transition-transform duration-300
+      ${mobileOpen ? 'translate-x-0' : 'translate-x-full'}`}
+    role="dialog"
+    aria-modal="true"
+  >
+    <div className="p-4 border-b flex items-center justify-between">
+      <span className="text-lg font-semibold tuareg-blue">Menu</span>
+      <button
+        aria-label="Fermer le menu"
+        onClick={() => setMobileOpen(false)}
+        className="p-2 rounded-md hover:bg-slate-100"
+      >
+        <svg viewBox="0 0 24 24" className="h-6 w-6" fill="currentColor">
+          <path d="M6 18L18 6M6 6l12 12" />
+        </svg>
+      </button>
+    </div>
+
+    <nav className="p-4">
+      <ul className="space-y-2">
+        {navigation.map((item) => {
+          const Icon = item.icon
+          const isActive = activeSection === item.id
+          return (
+            <li key={item.id}>
+              <a
+                href={`#${item.id}`}
+                onClick={() => {
+                  setActiveSection(item.id)
+                  setMobileOpen(false)
+                }}
+                className={`flex items-center gap-3 rounded-lg px-4 py-3 transition ${
+                  isActive
+                    ? 'bg-orange-50 text-orange-700'
+                    : 'text-slate-700 hover:bg-slate-50'
+                }`}
+              >
+                <Icon size={18} />
+                <span className="text-base">{item.label}</span>
+              </a>
+            </li>
+          )
+        })}
+      </ul>
+
+      {/* CTA rapides en bas du panneau */}
+      <div className="mt-6 grid grid-cols-2 gap-3">
+        <a
+          href="#musique"
+          onClick={() => setMobileOpen(false)}
+          className="text-center rounded-full bg-orange-600 text-white px-4 py-3 text-sm font-medium hover:bg-orange-700"
+        >
+          Écouter
+        </a>
+        <a
+          href="#concerts"
+          onClick={() => setMobileOpen(false)}
+          className="text-center rounded-full border border-slate-300 text-slate-700 px-4 py-3 text-sm font-medium hover:bg-slate-50"
+        >
+          Concerts
+        </a>
+      </div>
+
+      {/* Liens sociaux (optionnel) */}
+      <div className="mt-8 flex items-center gap-4 px-4 text-slate-600">
+        <a href="https://www.youtube.com" target="_blank" rel="noopener noreferrer" className="hover:text-slate-900">
+          <Youtube size={22} />
+        </a>
+        <a href="https://www.instagram.com/kadertarhanine" target="_blank" rel="noopener noreferrer" className="hover:text-slate-900">
+          <Instagram size={22} />
+        </a>
+        <a href="mailto:contact@kadertarhanine.com" className="hover:text-slate-900">
+          <Mail size={22} />
+        </a>
+      </div>
+    </nav>
+  </div>
+</nav>
 
       {/* Section Hero */}
       <section id="accueil" className="hero-section flex items-center justify-center relative pt-20">
