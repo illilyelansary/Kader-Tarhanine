@@ -80,8 +80,8 @@ function App() {
   const singles = [
     { title: 'la la la (H MED 45 ft. Kader Tarhanine)', meta: 'Collaboration • 2025', youtube: 'https://www.youtube.com/watch?v=-RQ7DgMvtic' },
     { title: 'Zain Assahra (feat. Mouna Dendenni)', meta: 'Single • 2024', youtube: 'https://www.youtube.com/watch?v=PyFJuUKZUh4' },
-    { title: 'Aliad Idja Ehane', meta: 'Single • 2024', youtube: 'https://www.youtube.com/watch?v=PyFJuUKZUh4' },
-    { title: 'Meddane Taknassam (feat. Bombino)', meta: 'Single • 2024', youtube: 'https://www.youtube.com/watch?v=PyFJuUKZUh4' },
+    { title: 'Aliad Idja Ehane', meta: 'Single • 2024', youtube: 'https://www.youtube.com/watch?v=AOtoOIzTUl8' },
+    { title: 'Meddane Taknassam (feat. Bombino)', meta: 'Single • 2024', youtube: 'https://www.youtube.com/watch?v=ALch4yaE7_g' },
     { title: 'Inizdiam', meta: 'Clip • 2023', youtube: 'https://www.youtube.com/watch?v=X_ClhuYqbsM' },
     { title: 'Algamra Leila', meta: 'Clip • 2019', youtube: 'https://www.youtube.com/watch?v=Sp0Fn4VI1yQ' },
     { title: 'Imanine', meta: 'Clip (Ikewane) • 2019', youtube: 'https://www.youtube.com/watch?v=WJbYL1Zu_0Q' },
