@@ -69,14 +69,14 @@ function App() {
     const element = document.getElementById(sectionId)
     if (element) {
       element.scrollIntoView({ behavior: 'smooth' })
-      setMobileOpen(false) // ferme drawer mobile
-      window.history.replaceState(null, '', `#${sectionId}`) // met à jour l’URL
+      setMobileOpen(false)
+      window.history.replaceState(null, '', `#${sectionId}`)
     }
   }
 
   const openLink = (url) => window.open(url, '_blank', 'noopener,noreferrer')
 
-  // Singles / Clips (listés dans la section Musique — les clips détaillés s’affichent dans <Videos />)
+  // Singles / Clips (déjà ordonnés du plus récent au plus ancien)
   const singles = [
     { title: 'la la la (H MED 45 ft. Kader Tarhanine)', meta: 'Collaboration • 2025', youtube: 'https://www.youtube.com/watch?v=-RQ7DgMvtic' },
     { title: 'Zain Assahra (feat. Mouna Dendenni)', meta: 'Single • 2024', youtube: 'https://www.youtube.com/watch?v=PyFJuUKZUh4' },
@@ -89,29 +89,18 @@ function App() {
   ]
 
   /**
-   * CONCERTS & FESTIVALS — Données vérifiées (2024 → 2026)
-   * On garde tout au même endroit pour mise à jour simple.
+   * CONCERTS & FESTIVALS — Données (2024 → 2025)
    * Chaque entrée = { date: 'YYYY-MM-DD', title, city, country, note?, url? }
-   *
-   * NB : La section se segmente toute seule en "à venir" / "passés" selon la date du jour.
+   * NB : Aucune date future confirmée au 28/08/2025 → "Prochains concerts" affiche un message.
    */
   const events = [
-    // 2026 (à venir)
-    {
-      date: '2026-07-02',
-      title: 'Rudolstadt Festival',
-      city: 'Rudolstadt', country: 'Allemagne',
-      note: 'Festival (2–5 juillet 2026)',
-      url: 'https://www.rudolstadt-festival.de/en/program/artistdetail/kader-tarhanine.html'
-    },
-
-    // 2025
+    // ——— 2025 (passés récents) ———
     {
       date: '2025-08-09',
       title: 'African Beats Festival',
       city: 'Kawęczyn (Varsovie)', country: 'Pologne',
       note: 'Concert à 18:00',
-      url: 'https://africanbeats.pl/program-2025/'
+      url: 'https://africanbeats.pl/kader-tarhanine/'
     },
     {
       date: '2025-08-02',
@@ -124,18 +113,18 @@ function App() {
       date: '2025-07-27',
       title: 'Sfinks Mixed',
       city: 'Boechout', country: 'Belgique',
-      note: 'Concert à 17:00',
-      url: 'https://www.sfinks.be/artist/kader-tarhanine/'
+      note: 'Concert',
+      url: 'https://avanzert.com/concert/kader-tarhanine-sfinks-festival-2025-07-27/'
     },
     {
       date: '2025-07-06',
       title: 'Rudolstadt Festival',
       city: 'Rudolstadt', country: 'Allemagne',
       note: 'Show festival',
-      url: 'https://avanzert.com/concert/kader-tarhanine-rudolstadt-festival-2025-07-06/'
+      url: 'https://www.rudolstadt-festival.de/en/program/artistdetail/kader-tarhanine.html'
     },
 
-    // 2024 (passés récents)
+    // ——— 2024 ———
     {
       date: '2024-07-27',
       title: "Théâtre de l'Orangerie",
@@ -148,7 +137,7 @@ function App() {
       title: 'Festival Tunis sur Seine',
       city: 'Aubervilliers (Paris)', country: 'France',
       note: 'Festival',
-      url: 'https://www.box.fr/fiche/ktyb-kader-tarhanine-benboo-1/2588923'
+      url: 'https://www.fnactickets.com/ticket-evenement/musique-electronique-ktyb-kader-tarhanine-benboo-man67324-lt.htm'
     },
     {
       date: '2024-07-04',
@@ -173,14 +162,15 @@ function App() {
     }
   ]
 
-  // Tri et séparation (ordre chrono croissant dans chaque bloc)
+  // Séparation & tri : du plus récent au plus ancien dans chaque bloc
   const { upcoming, past } = useMemo(() => {
-    const today = new Date()
-    const ordered = [...events].sort((a, b) => new Date(a.date) - new Date(b.date))
-    const up = ordered.filter(e => new Date(e.date) >= new Date(today.toDateString()))
-    const pa = ordered.filter(e => new Date(e.date) < new Date(today.toDateString()))
+    const todayMidnight = new Date(new Date().toDateString())
+    const up = events.filter(e => new Date(e.date) >= todayMidnight)
+                     .sort((a, b) => new Date(b.date) - new Date(a.date)) // futur proche → futur lointain
+    const pa = events.filter(e => new Date(e.date) < todayMidnight)
+                     .sort((a, b) => new Date(b.date) - new Date(a.date)) // récent → ancien
     return { upcoming: up, past: pa }
-  }, [JSON.stringify(events)])
+  }, [events])
 
   // Formateur de date lisible (ex: 27 juillet 2025)
   const formatDate = (iso) =>
@@ -528,29 +518,31 @@ function App() {
 
                   {upcoming.length === 0 && (
                     <div className="p-4 rounded-lg bg-amber-50 border border-amber-200 text-amber-800">
-                      Aucune date publique annoncée. Revenez bientôt !
+                      Aucune date publique annoncée pour le moment. Revenez bientôt !
                     </div>
                   )}
 
-                  <div className="space-y-6">
-                    {upcoming.map((e, idx) => (
-                      <div key={idx} className="border-l-4 border-orange-500 pl-6">
-                        <h4 className="font-semibold text-lg">{e.title}</h4>
-                        <p className="text-gray-600 flex items-center mt-2">
-                          <MapPin size={16} className="mr-2" />
-                          {e.city}, {e.country} • {formatDate(e.date)}
-                        </p>
-                        {e.note && <p className="text-sm text-gray-500 mt-1">{e.note}</p>}
-                        {e.url && (
-                          <div className="mt-3">
-                            <Button size="sm" variant="outline" onClick={() => openLink(e.url)}>
-                              Détails <ExternalLink size={14} className="ml-1" />
-                            </Button>
-                          </div>
-                        )}
-                      </div>
-                    ))}
-                  </div>
+                  {upcoming.length > 0 && (
+                    <div className="space-y-6">
+                      {upcoming.map((e, idx) => (
+                        <div key={idx} className="border-l-4 border-orange-500 pl-6">
+                          <h4 className="font-semibold text-lg">{e.title}</h4>
+                          <p className="text-gray-600 flex items-center mt-2">
+                            <MapPin size={16} className="mr-2" />
+                            {e.city}, {e.country} • {formatDate(e.date)}
+                          </p>
+                          {e.note && <p className="text-sm text-gray-500 mt-1">{e.note}</p>}
+                          {e.url && (
+                            <div className="mt-3">
+                              <Button size="sm" variant="outline" onClick={() => openLink(e.url)}>
+                                Détails <ExternalLink size={14} className="ml-1" />
+                              </Button>
+                            </div>
+                          )}
+                        </div>
+                      ))}
+                    </div>
+                  )}
                 </CardContent>
               </Card>
 
@@ -583,7 +575,7 @@ function App() {
 
             {/* Légende tri */}
             <p className="text-center text-sm text-gray-500 mt-6">
-              Listes triées par ordre chronologique (dates à venir puis dates passées).
+              Listes triées du plus récent au plus ancien (passés), et du plus proche au plus lointain (si des dates à venir existent).
             </p>
           </div>
         </div>
