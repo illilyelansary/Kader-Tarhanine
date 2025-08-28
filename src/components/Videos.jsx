@@ -1,10 +1,12 @@
-import React from 'react'
+// src/components/Videos.jsx
+import React, { useMemo } from 'react'
 import { Card, CardContent } from '@/components/ui/card.jsx'
 import { Button } from '@/components/ui/button.jsx'
 import { Play, Youtube, ExternalLink } from 'lucide-react'
 
+/* ---------- Helpers YouTube ---------- */
 const getYouTubeId = (url = '') => {
-  // Gère: https://www.youtube.com/watch?v=ID, https://youtu.be/ID, y compris paramètres
+  // Gère: https://www.youtube.com/watch?v=ID, https://youtu.be/ID, shorts
   const match =
     url.match(/(?:youtube\.com.*[?&]v=|youtu\.be\/)([a-zA-Z0-9_-]{11})/) ||
     url.match(/youtube\.com\/shorts\/([a-zA-Z0-9_-]{11})/)
@@ -12,7 +14,6 @@ const getYouTubeId = (url = '') => {
 }
 
 const getYouTubeThumb = (id, quality = 'max') => {
-  // quality: 'max' | 'hq'
   const file = quality === 'max' ? 'maxresdefault.jpg' : 'hqdefault.jpg'
   return `https://img.youtube.com/vi/${id}/${file}`
 }
@@ -20,26 +21,23 @@ const getYouTubeThumb = (id, quality = 'max') => {
 const getClipThumb = (item) => {
   const id = getYouTubeId(item.url)
   if (id) return getYouTubeThumb(id, 'max')
-  // Non-YouTube: on garde la miniature fournie si présente
   return item.thumbnail || 'https://via.placeholder.com/480x270/f97316/ffffff?text=Video'
 }
 
 const handleThumbError = (e) => {
-  // Si maxres indisponible → tenter hqdefault, sinon placeholder
   const src = e.currentTarget.getAttribute('src') || ''
   if (src.includes('maxresdefault')) {
-    const hq = src.replace('maxresdefault.jpg', 'hqdefault.jpg')
-    e.currentTarget.setAttribute('src', hq)
+    e.currentTarget.setAttribute('src', src.replace('maxresdefault.jpg', 'hqdefault.jpg'))
   } else {
     e.currentTarget.setAttribute('src', 'https://via.placeholder.com/480x270/f97316/ffffff?text=Video')
   }
 }
 
+/* ---------- Helpers Concerts ---------- */
 const handleConcertThumbError = (e) => {
   const src = e.currentTarget.getAttribute('src') || ''
   if (src.includes('maxresdefault')) {
-    const hq = src.replace('maxresdefault.jpg', 'hqdefault.jpg')
-    e.currentTarget.setAttribute('src', hq)
+    e.currentTarget.setAttribute('src', src.replace('maxresdefault.jpg', 'hqdefault.jpg'))
   } else {
     e.currentTarget.setAttribute('src', 'https://via.placeholder.com/640x360/f97316/ffffff?text=Concert+Live')
   }
@@ -51,32 +49,35 @@ const getConcertThumb = (item) => {
   return item.thumbnail || 'https://via.placeholder.com/640x360/f97316/ffffff?text=Concert+Live'
 }
 
+// "DD.MM.YYYY" -> Date
+const parseFrDate = (d = '') => {
+  const [dd, mm, yyyy] = d.split('.').map((x) => parseInt(x, 10))
+  if (!dd || !mm || !yyyy) return null
+  return new Date(yyyy, mm - 1, dd)
+}
+
+/* ---------- Données ---------- */
 const Videos = () => {
   const clips = [
     {
       id: 1,
       title: 'Al Gamra Leila',
-      year: '2023',
+      year: '2019',
       url: 'https://www.youtube.com/watch?v=Sp0Fn4VI1yQ',
-      // thumbnail laissé possible mais ignoré si URL YouTube (on génère automatiquement)
-      thumbnail: 'https://sl.bing.net/b1E4EBzFyyy',
-      views: '+12.1M vues',
+      views: 'Clip officiel',
     },
     {
       id: 2,
       title: 'Zain Assahra (feat. MOUNA DENDENNI)',
       year: '2024',
       url: 'https://www.youtube.com/watch?v=PyFJuUKZUh4',
-      thumbnail: 'https://img.youtube.com/vi/OEx0/maxresdefault.pg',
-      views: '4.1M vues',
+      views: 'Clip officiel',
     },
     {
       id: 3,
       title: 'Tarhanine (feat. Sidiki Diabaté)',
       year: '2018',
       url: 'https://www.youtube.com/watch?v=pM7sdSJtDgU',
-      // Non-YouTube → on utilisera cette miniature si fournie, sinon placeholder
-      thumbnail: 'https://img.youtube.com/vi/dQw4w9WgXcQ/maxresdefault.jpg',
       views: 'Collaboration',
     },
     {
@@ -84,7 +85,6 @@ const Videos = () => {
       title: 'H MED 45 - la la la ft. KADER TARHANINE',
       year: '2025',
       url: 'https://www.youtube.com/watch?v=-RQ7DgMvtic',
-      thumbnail: 'https://img.youtube.com/vi/-RQ7DgMvtic/maxresdefault.jpg',
       views: 'Nouveau',
     },
     {
@@ -92,35 +92,32 @@ const Videos = () => {
       title: 'Inizdiam',
       year: '2023',
       url: 'https://www.youtube.com/watch?v=X_ClhuYqbsM',
-      thumbnail: 'https://img.youtube.com/vi/-RQ7DgMvtic/maxresdefault.jpg',
-      views: 'Melodie',
+      views: 'Mélodie',
     },
-      {
+    {
       id: 6,
       title: 'Imanine',
       year: '2019',
       url: 'https://www.youtube.com/watch?v=WJbYL1Zu_0Q',
-      thumbnail: 'https://img.youtube.com/vi/-RQ7DgMvtic/maxresdefault.jpg',
       views: 'Clip Officiel de Ikewane',
     },
   ]
 
-  const concerts = [
+  // Plus de concerts : certains avec ID YouTube, d’autres avec lien de recherche
+  const concertsRaw = [
     {
       id: 1,
       title: 'Roskilde Festival 2024',
       location: 'Danemark',
       date: '04.07.2024',
       url: 'https://www.youtube.com/watch?v=CEmZdbQUueU',
-      thumbnail: 'https://img.youtube.com/vi/CEmZdbQUueU/maxresdefault.jpg',
     },
     {
       id: 2,
-      title: 'Rotterdam Bluegrass Festival',
+      title: 'Rotterdam Bluegrass Festival 2024',
       location: 'Hollande',
       date: '30.06.2024',
       url: 'https://www.youtube.com/watch?v=xOQ69T4uFRU',
-      thumbnail: 'https://img.youtube.com/vi/xOQ69T4uFRU/maxresdefault.jpg',
     },
     {
       id: 3,
@@ -128,7 +125,6 @@ const Videos = () => {
       location: 'Allemagne',
       date: '06.07.2025',
       url: 'https://www.youtube.com/watch?v=7SORkXHJHeg',
-      thumbnail: 'https://img.youtube.com/vi/7SORkXHJHeg/maxresdefault.jpg',
     },
     {
       id: 4,
@@ -136,13 +132,69 @@ const Videos = () => {
       location: 'Belgique',
       date: '27.07.2025',
       url: 'https://www.youtube.com/watch?v=hRZc0j_IYpw',
-      thumbnail: 'https://img.youtube.com/vi/hRZc0j_IYpw/maxresdefault.jpg',
+    },
+    {
+      id: 5,
+      title: 'Oslo World Festival 2023',
+      location: 'Norvège',
+      date: '01.11.2023',
+      url: 'https://www.youtube.com/results?search_query=Kader+Tarhanine+Oslo+World+Festival+Essakane+Production',
+      thumbnail: 'https://via.placeholder.com/640x360/f97316/ffffff?text=Oslo+World+Festival',
+    },
+    {
+      id: 6,
+      title: 'Taragalte Festival 2024',
+      location: 'Maroc',
+      date: '01.10.2024',
+      url: 'https://www.youtube.com/results?search_query=Kader+Tarhanine+Taragalte+Festival+Essakane+Production',
+      thumbnail: 'https://via.placeholder.com/640x360/f97316/ffffff?text=Taragalte+Festival',
+    },
+    {
+      id: 7,
+      title: 'Timitar Festival',
+      location: 'Agadir, Maroc',
+      date: '01.07.2022',
+      url: 'https://www.youtube.com/results?search_query=Kader+Tarhanine+Timitar+Festival+Essakane+Production',
+      thumbnail: 'https://via.placeholder.com/640x360/f97316/ffffff?text=Timitar+Festival',
+    },
+    {
+      id: 8,
+      title: 'Festival of World Sacred Music',
+      location: 'Fès, Maroc',
+      date: '01.06.2022',
+      url: 'https://www.youtube.com/results?search_query=Kader+Tarhanine+Fes+Sacred+Music+Festival+Essakane+Production',
+      thumbnail: 'https://via.placeholder.com/640x360/f97316/ffffff?text=Fes+Sacred+Music',
+    },
+    {
+      id: 9,
+      title: 'Expo Osaka 2025',
+      location: 'Japon',
+      date: '02.08.2025',
+      url: 'https://www.youtube.com/results?search_query=Kader+Tarhanine+Expo+Osaka+2025+Essakane+Production',
+      thumbnail: 'https://via.placeholder.com/640x360/f97316/ffffff?text=Expo+Osaka+2025',
+    },
+    {
+      id: 10,
+      title: 'African Beats Festival 2025',
+      location: 'Varsovie, Pologne',
+      date: '09.08.2025',
+      url: 'https://www.youtube.com/results?search_query=Kader+Tarhanine+African+Beats+Festival+Warsaw+Essakane+Production',
+      thumbnail: 'https://via.placeholder.com/640x360/f97316/ffffff?text=African+Beats+Festival',
     },
   ]
 
-  const openVideo = (url) => {
-    window.open(url, '_blank', 'noopener,noreferrer')
-  }
+  // Tri chronologique (ancien -> récent)
+  const concerts = useMemo(() => {
+    const copy = [...concertsRaw]
+    copy.sort((a, b) => {
+      const da = parseFrDate(a.date)?.getTime() ?? 0
+      const db = parseFrDate(b.date)?.getTime() ?? 0
+      return da - db
+    })
+    return copy
+  }, [concertsRaw])
+
+  const openVideo = (url) => window.open(url, '_blank', 'noopener,noreferrer')
 
   return (
     <section id="videos" className="py-20 bg-white">
@@ -197,7 +249,7 @@ const Videos = () => {
             </div>
           </div>
 
-          {/* Concerts Live */}
+          {/* Concerts Live - ordre chronologique */}
           <div>
             <h3 className="text-3xl font-bold mb-8 desert-orange">Concerts Live</h3>
             <div className="grid md:grid-cols-2 gap-8">
@@ -241,7 +293,7 @@ const Videos = () => {
 
           <div className="text-center mt-12">
             <Button
-              onClick={() => window.open('https://www.youtube.com/@EssakaneProduction', '_blank')}
+              onClick={() => window.open('https://www.youtube.com/@EssakaneProduction', '_blank', 'noopener,noreferrer')}
               className="bg-red-600 hover:bg-red-700 text-white px-8 py-3 text-lg rounded-full hover-lift"
             >
               <Youtube className="mr-2" size={20} />
