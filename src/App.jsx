@@ -88,6 +88,23 @@ function App() {
     { title: 'Tarhanine (feat. Sidiki Diabaté)', meta: 'Collaboration • 2018', youtube: 'https://www.youtube.com/watch?v=pM7sdSJtDgU' }
   ]
 
+  // Membres du groupe (macarons)
+  // Remplace 'photo' par le chemin réel si tu as les images (ex: './assets/members/abd-elkadir.jpg')
+  const bandMembers = [
+    { name: 'Abd Elkadir SABOU', role: 'Guitare & Voix Lead', photo: null },
+    { name: 'Mohammed Zenani', role: 'Guitare & Voix accompagnement', photo: null },
+    { name: 'Mohamed Alhousseini', role: 'Percussions (Batterie / Djembé / Calebasse)', photo: null },
+    { name: 'Drissa Koné', role: 'Guitare Basse', photo: null },
+  ]
+
+  const getInitials = (fullName) => {
+    if (!fullName) return '?'
+    const parts = fullName.trim().split(/\s+/)
+    const first = parts[0]?.[0] || ''
+    const last = parts[parts.length - 1]?.[0] || ''
+    return (first + last).toUpperCase()
+  }
+
   /**
    * CONCERTS & FESTIVALS — Données (2024 → 2025)
    * Chaque entrée = { date: 'YYYY-MM-DD', title, city, country, note?, url? }
@@ -362,7 +379,37 @@ function App() {
                   Sa musique marie rythmes traditionnels et tonalités rock sur des paroles poétiques sahéliennes et arabophones,
                   créant un pont vivant entre tradition et modernité.
                 </p>
+
+                {/* Encadré membres du groupe */}
+                <div className="mt-10">
+                  <h4 className="text-2xl font-semibold mb-6 tuareg-blue">Membres du groupe</h4>
+                  <div className="grid sm:grid-cols-2 md:grid-cols-4 gap-6">
+                    {bandMembers.map((m, idx) => (
+                      <div
+                        key={idx}
+                        className="flex flex-col items-center text-center p-4 bg-amber-50 rounded-2xl shadow-sm hover-lift"
+                      >
+                        {m.photo ? (
+                          <img
+                            src={m.photo}
+                            alt={m.name}
+                            className="w-24 h-24 rounded-full object-cover mb-4 border-4 border-white shadow"
+                          />
+                        ) : (
+                          <div className="w-24 h-24 rounded-full mb-4 border-4 border-white shadow flex items-center justify-center desert-gradient text-white text-xl font-bold">
+                            {getInitials(m.name)}
+                          </div>
+                        )}
+                        <div className="space-y-1">
+                          <h5 className="font-semibold text-base">{m.name}</h5>
+                          <p className="text-sm text-gray-600">{m.role}</p>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
               </div>
+
               <div className="relative">
                 <img
                   src={tuaregMusicians}
