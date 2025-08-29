@@ -97,7 +97,7 @@ function App() {
   // Membres du groupe (macarons)
   const bandMembers = [
     { name: 'Abd Elkadir SABOU', role: 'Guitare & Voix Lead', photo: abdElkadirPhoto },
-    { name: 'Mohammed Zenani', role: 'Guitare & Voix accompagnement', photo: mohammedZenaniPhoto },
+    { name: 'Mohammed Zenani', role: 'Guitare rythmique & Choeur', photo: mohammedZenaniPhoto },
     { name: 'Mohamed Alhousseini', role: 'Percussions (Batterie / Djembé / Calebasse)', photo: mohamedAlhousseiniPhoto },
     { name: 'Drissa Koné', role: 'Guitare Basse', photo: drissaKonePhoto },
   ]
