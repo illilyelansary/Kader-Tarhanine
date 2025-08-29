@@ -28,6 +28,12 @@ import kaderPhoto from './assets/4enTSMYZjml8.jpg'
 import desertLandscape from './assets/mH0NU1PYe0fM.jpg'
 import tuaregMusicians from './assets/sgxiVNQXFkDF.jpg'
 
+// Photos des membres (assure-toi que ces fichiers existent)
+import abdElkadirPhoto from './assets/members/abd-elkadir.jpg'
+import mohammedZenaniPhoto from './assets/members/mohammed-zenani.jpg'
+import mohamedAlhousseiniPhoto from './assets/members/mohamed-alhousseini.jpg'
+import drissaKonePhoto from './assets/members/drissa-kone.jpg'
+
 function App() {
   const [activeSection, setActiveSection] = useState('accueil')
   const [isScrolled, setIsScrolled] = useState(false)
@@ -89,12 +95,11 @@ function App() {
   ]
 
   // Membres du groupe (macarons)
-  // Remplace 'photo' par le chemin réel si tu as les images (ex: './assets/members/abd-elkadir.jpg')
   const bandMembers = [
-    { name: 'Abd Elkadir SABOU', role: 'Guitare & Voix Lead', photo: null },
-    { name: 'Mohammed Zenani', role: 'Guitare & Voix accompagnement', photo: null },
-    { name: 'Mohamed Alhousseini', role: 'Percussions (Batterie / Djembé / Calebasse)', photo: null },
-    { name: 'Drissa Koné', role: 'Guitare Basse', photo: null },
+    { name: 'Abd Elkadir SABOU', role: 'Guitare & Voix Lead', photo: abdElkadirPhoto },
+    { name: 'Mohammed Zenani', role: 'Guitare & Voix accompagnement', photo: mohammedZenaniPhoto },
+    { name: 'Mohamed Alhousseini', role: 'Percussions (Batterie / Djembé / Calebasse)', photo: mohamedAlhousseiniPhoto },
+    { name: 'Drissa Koné', role: 'Guitare Basse', photo: drissaKonePhoto },
   ]
 
   const getInitials = (fullName) => {
