@@ -798,7 +798,6 @@ function App() {
 
       {/* VIDEOS (concerts + clips gérés dans le composant) */}
       <Videos sort="desc" />
-      <Videos />
 
       {/* RÉSEAUX SOCIAUX */}
       <section id="reseaux-sociaux">
