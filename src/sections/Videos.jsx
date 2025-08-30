@@ -47,6 +47,7 @@ const clips = [
   },
   {
     year: 2025,
+    date: '2025-04-18',
     title: 'la la la (H MED 45 ft. Kader Tarhanine)',
     url: 'https://www.youtube.com/watch?v=-RQ7DgMvtic',
     note: 'Collaboration'
