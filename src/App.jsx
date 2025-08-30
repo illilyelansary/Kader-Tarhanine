@@ -94,10 +94,20 @@ function App() {
     { title: 'Tarhanine (feat. Sidiki Diabaté)', meta: 'Collaboration • 2018', youtube: 'https://www.youtube.com/watch?v=pM7sdSJtDgU' }
   ]
 
+  // Mise en avant (fenêtre "Nouvelle sortie")
+  const featuredRelease = {
+    monthLabel: new Date().toLocaleDateString('fr-FR', { month: 'long', year: 'numeric' }), // ex: "août 2025"
+    title: 'Ahegh Akal dagh warlegh tinnah',
+    artist: 'Kader Tarhanine',
+    context: 'Rad Fyah Studio — Live Session',
+    url: 'https://www.youtube.com/watch?v=jr5eMSLPKuo',
+    youtubeId: 'jr5eMSLPKuo'
+  }
+
   // Membres du groupe (macarons)
   const bandMembers = [
     { name: 'Abd Elkadir SABOU', role: 'Guitare & Voix Lead', photo: abdElkadirPhoto },
-    { name: 'Mohammed Zenani', role: 'Guitare rythmique & Choeur', photo: mohammedZenaniPhoto },
+    { name: 'Mohammed Zenani', role: 'Guitare rythmique & Voix', photo: mohammedZenaniPhoto },
     { name: 'Mohamed Alhousseini', role: 'Percussions (Batterie / Djembé / Calebasse)', photo: mohamedAlhousseiniPhoto },
     { name: 'Drissa Koné', role: 'Guitare Basse', photo: drissaKonePhoto },
   ]
@@ -279,7 +289,7 @@ function App() {
                   <button
                     key={item.id}
                     onClick={() => scrollToSection(item.id)}
-                    className={`w-full max-w-sm flex items-center justify-between px-5 py-3 rounded-xl border transition-all duration-200
+                    className={`w-full max-w-sm flex items-center justify-between px-5 py-3 rounded-xl border transition-all durée-200
                       ${isActive ? 'bg-white/15 border-white/30 text-orange-300' : 'bg-white/10 border-white/20 text-white'}
                     `}
                   >
@@ -428,11 +438,59 @@ function App() {
         </div>
       </section>
 
-      {/* MUSIQUE — Albums + Singles (liens YouTube/plateformes) */}
+      {/* MUSIQUE — Mise en avant + Albums + Singles */}
       <section id="musique" className="py-20 bg-gradient-to-r from-amber-100 to-orange-100">
         <div className="container mx-auto px-6">
           <div className="max-w-6xl mx-auto">
             <h2 className="text-5xl font-bold text-center mb-16 tuareg-blue">Musique</h2>
+
+            {/* Fenêtre nouvelle sortie */}
+            <Card className="mb-12 hover-lift">
+              <CardContent className="p-6 md:p-8">
+                <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-6">
+                  <div>
+                    <span className="inline-block text-xs uppercase tracking-wide px-3 py-1 rounded-full bg-orange-100 text-orange-700 mb-3">
+                      Nouveau — {featuredRelease.monthLabel}
+                    </span>
+                    <h3 className="text-2xl font-bold tuareg-blue">
+                      {featuredRelease.artist} — {featuredRelease.title}
+                    </h3>
+                    <p className="text-gray-700 mt-1">{featuredRelease.context}</p>
+
+                    <div className="mt-4 flex gap-3">
+                      <Button
+                        className="bg-red-600 hover:bg-red-700"
+                        onClick={() => openLink(featuredRelease.url)}
+                      >
+                        <Youtube size={18} className="mr-2" />
+                        Regarder sur YouTube
+                      </Button>
+                      <Button
+                        variant="outline"
+                        onClick={() => scrollToSection('videos')}
+                      >
+                        Plus de vidéos
+                      </Button>
+                    </div>
+                  </div>
+
+                  {/* Lecteur YouTube responsive */}
+                  <div className="w-full md:w-[520px]">
+                    <div className="relative w-full pb-[56.25%] rounded-xl overflow-hidden shadow">
+                      <iframe
+                        className="absolute inset-0 w-full h-full"
+                        src={`https://www.youtube.com/embed/${featuredRelease.youtubeId}`}
+                        title={`${featuredRelease.artist} - ${featuredRelease.title}`}
+                        frameBorder="0"
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                        allowFullScreen
+                      />
+                    </div>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+
             <div className="grid md:grid-cols-2 gap-8">
               {/* Albums */}
               <Card className="hover-lift">
