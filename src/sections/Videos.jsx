@@ -57,10 +57,16 @@ const clips = [
     year: 2024,
     title: 'Zain Assahra (feat. Mouna Dendenni)',
     url: 'https://www.youtube.com/watch?v=PyFJuUKZUh4',
-    note: 'Single'
+    note: 'Single en Collaboration'
   },
 
   // 2023
+   {
+    year: 2023,
+    title: 'Algamra Leila',
+    url: 'https://www.youtube.com/watch?v=Sp0Fn4VI1yQ',
+    note: 'Clip Original'
+  },
   {
     year: 2023,
     title: 'Inizdiam',
@@ -69,12 +75,6 @@ const clips = [
   },
 
   // 2019
-  {
-    year: 2019,
-    title: 'Algamra Leila',
-    url: 'https://www.youtube.com/watch?v=Sp0Fn4VI1yQ',
-    note: 'Clip'
-  },
   {
     year: 2019,
     title: 'Imanine (Ikewane)',
