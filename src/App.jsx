@@ -16,7 +16,10 @@ import {
   Users,
   Menu as MenuIcon,
   X,
-  ExternalLink
+  ExternalLink,
+  ChevronDown,
+  ChevronUp,
+  Star
 } from 'lucide-react'
 import Gallery from './components/Gallery.jsx'
 import Videos from './components/Videos.jsx'
@@ -94,16 +97,6 @@ function App() {
     { title: 'Tarhanine (feat. Sidiki Diabaté)', meta: 'Collaboration • 2018', youtube: 'https://www.youtube.com/watch?v=pM7sdSJtDgU' }
   ]
 
-  // Mise en avant (fenêtre "Nouvelle sortie")
-  const featuredRelease = {
-    monthLabel: new Date().toLocaleDateString('fr-FR', { month: 'long', year: 'numeric' }), // ex: "août 2025"
-    title: 'Ahegh Akal dagh warlegh tinnah',
-    artist: 'Kader Tarhanine',
-    context: 'Rad Fyah Studio — Live Session',
-    url: 'https://www.youtube.com/watch?v=jr5eMSLPKuo',
-    youtubeId: 'jr5eMSLPKuo'
-  }
-
   // Membres du groupe (macarons)
   const bandMembers = [
     { name: 'Abd Elkadir SABOU', role: 'Guitare & Voix Lead', photo: abdElkadirPhoto },
@@ -123,7 +116,7 @@ function App() {
   /**
    * CONCERTS & FESTIVALS — Données (2024 → 2025)
    * Chaque entrée = { date: 'YYYY-MM-DD', title, city, country, note?, url? }
-   * NB : Aucune date future confirmée au 28/08/2025 → "Prochains concerts" affiche un message.
+   * NB : Aucune date future confirmée au 30/08/2025 → "Prochains concerts" affiche un message.
    */
   const events = [
     // ——— 2025 (passés récents) ———
@@ -203,6 +196,69 @@ function App() {
                      .sort((a, b) => new Date(b.date) - new Date(a.date)) // récent → ancien
     return { upcoming: up, past: pa }
   }, [events])
+
+  // ----------- Mises en avant : liste + état courant -----------
+  // Triées de la plus récente à la plus ancienne
+  const featuredReleases = [
+    {
+      date: '2025-08',
+      artist: 'Kader Tarhanine',
+      title: 'Ahegh Akal dagh warlegh tinnah',
+      context: 'Rad Fyah Studio — Live Session',
+      url: 'https://www.youtube.com/watch?v=jr5eMSLPKuo',
+      youtubeId: 'jr5eMSLPKuo'
+    },
+    {
+      date: '2025-07',
+      artist: 'H MED 45 ft. Kader Tarhanine',
+      title: 'la la la',
+      context: 'Collaboration',
+      url: 'https://www.youtube.com/watch?v=-RQ7DgMvtic',
+      youtubeId: '-RQ7DgMvtic'
+    },
+    {
+      date: '2024-11',
+      artist: 'Kader Tarhanine ft. Mouna Dendenni',
+      title: 'Zain Assahra',
+      context: 'Single',
+      url: 'https://www.youtube.com/watch?v=PyFJuUKZUh4',
+      youtubeId: 'PyFJuUKZUh4'
+    },
+    {
+      date: '2024-09',
+      artist: 'Kader Tarhanine',
+      title: 'Aliad Idja Ehane',
+      context: 'Single',
+      url: 'https://www.youtube.com/watch?v=AOtoOIzTUl8',
+      youtubeId: 'AOtoOIzTUl8'
+    },
+    {
+      date: '2024-06',
+      artist: 'Kader Tarhanine ft. Bombino',
+      title: 'Meddane Taknassam',
+      context: 'Single',
+      url: 'https://www.youtube.com/watch?v=ALch4yaE7_g',
+      youtubeId: 'ALch4yaE7_g'
+    },
+    {
+      date: '2023-04',
+      artist: 'Kader Tarhanine',
+      title: 'Inizdiam',
+      context: 'Clip',
+      url: 'https://www.youtube.com/watch?v=X_ClhuYqbsM',
+      youtubeId: 'X_ClhuYqbsM'
+    },
+  ]
+
+  const [currentFeaturedIndex, setCurrentFeaturedIndex] = useState(0)
+  const currentFeatured = featuredReleases[currentFeaturedIndex]
+  const [archiveOpen, setArchiveOpen] = useState(true)
+
+  // Helpers
+  const monthLabel = (isoYYYYMM) => {
+    const [y, m] = isoYYYYMM.split('-').map(Number)
+    return new Date(y, (m || 1) - 1, 1).toLocaleDateString('fr-FR', { month: 'long', year: 'numeric' })
+  }
 
   // Formateur de date lisible (ex: 27 juillet 2025)
   const formatDate = (iso) =>
@@ -289,7 +345,7 @@ function App() {
                   <button
                     key={item.id}
                     onClick={() => scrollToSection(item.id)}
-                    className={`w-full max-w-sm flex items-center justify-between px-5 py-3 rounded-xl border transition-all durée-200
+                    className={`w-full max-w-sm flex items-center justify-between px-5 py-3 rounded-xl border transition-all duration-200
                       ${isActive ? 'bg-white/15 border-white/30 text-orange-300' : 'bg-white/10 border-white/20 text-white'}
                     `}
                   >
@@ -379,7 +435,7 @@ function App() {
         <div className="container mx-auto px-6">
           <div className="max-w-6xl mx-auto">
             <h2 className="text-5xl font-bold text-center mb-16 tuareg-blue">À propos</h2>
-            <div className="grid md:grid-cols-2 gap-12 items-center">
+          <div className="grid md:grid-cols-2 gap-12 items-center">
               <div className="space-y-6 p-6 rounded-2xl border border-amber-200 bg-white shadow-sm">
                 <h3 className="text-3xl font-semibold desert-orange">L'artiste le plus écouté du Sahara</h3>
                 <p className="text-lg text-gray-700 leading-relaxed">
@@ -438,29 +494,29 @@ function App() {
         </div>
       </section>
 
-      {/* MUSIQUE — Mise en avant + Albums + Singles */}
+      {/* MUSIQUE — Mise en avant + Archive + Albums + Singles */}
       <section id="musique" className="py-20 bg-gradient-to-r from-amber-100 to-orange-100">
         <div className="container mx-auto px-6">
           <div className="max-w-6xl mx-auto">
             <h2 className="text-5xl font-bold text-center mb-16 tuareg-blue">Musique</h2>
 
             {/* Fenêtre nouvelle sortie */}
-            <Card className="mb-12 hover-lift">
+            <Card className="mb-4 hover-lift">
               <CardContent className="p-6 md:p-8">
                 <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-6">
                   <div>
-                    <span className="inline-block text-xs uppercase tracking-wide px-3 py-1 rounded-full bg-orange-100 text-orange-700 mb-3">
-                      Nouveau — {featuredRelease.monthLabel}
+                    <span className="inline-flex items-center text-xs uppercase tracking-wide px-3 py-1 rounded-full bg-orange-100 text-orange-700 mb-3">
+                      <Star size={14} className="mr-1" /> Nouveau — {monthLabel(currentFeatured.date)}
                     </span>
                     <h3 className="text-2xl font-bold tuareg-blue">
-                      {featuredRelease.artist} — {featuredRelease.title}
+                      {currentFeatured.artist} — {currentFeatured.title}
                     </h3>
-                    <p className="text-gray-700 mt-1">{featuredRelease.context}</p>
+                    <p className="text-gray-700 mt-1">{currentFeatured.context}</p>
 
                     <div className="mt-4 flex gap-3">
                       <Button
                         className="bg-red-600 hover:bg-red-700"
-                        onClick={() => openLink(featuredRelease.url)}
+                        onClick={() => openLink(currentFeatured.url)}
                       >
                         <Youtube size={18} className="mr-2" />
                         Regarder sur YouTube
@@ -479,8 +535,8 @@ function App() {
                     <div className="relative w-full pb-[56.25%] rounded-xl overflow-hidden shadow">
                       <iframe
                         className="absolute inset-0 w-full h-full"
-                        src={`https://www.youtube.com/embed/${featuredRelease.youtubeId}`}
-                        title={`${featuredRelease.artist} - ${featuredRelease.title}`}
+                        src={`https://www.youtube.com/embed/${currentFeatured.youtubeId}`}
+                        title={`${currentFeatured.artist} - ${currentFeatured.title}`}
                         frameBorder="0"
                         allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
                         allowFullScreen
@@ -488,6 +544,52 @@ function App() {
                     </div>
                   </div>
                 </div>
+              </CardContent>
+            </Card>
+
+            {/* Bandeau Archive des mises en avant */}
+            <Card className="mb-12 hover-lift">
+              <CardContent className="p-4 md:p-5">
+                <div className="flex items-center justify-between">
+                  <div className="font-semibold tuareg-blue">Archive des mises en avant</div>
+                  <button
+                    onClick={() => setArchiveOpen((v) => !v)}
+                    className="inline-flex items-center text-sm text-slate-600 hover:text-slate-800"
+                    aria-expanded={archiveOpen}
+                  >
+                    {archiveOpen ? <>Réduire <ChevronUp size={16} className="ml-1" /></> : <>Développer <ChevronDown size={16} className="ml-1" /></>}
+                  </button>
+                </div>
+
+                {archiveOpen && (
+                  <div className="mt-4">
+                    <div className="flex gap-3 overflow-x-auto pb-2">
+                      {featuredReleases.map((r, idx) => {
+                        const isActive = idx === currentFeaturedIndex
+                        return (
+                          <button
+                            key={`${r.youtubeId}-${idx}`}
+                            onClick={() => setCurrentFeaturedIndex(idx)}
+                            className={`shrink-0 text-left px-4 py-3 rounded-xl border transition-all ${
+                              isActive
+                                ? 'bg-white border-orange-300 shadow text-orange-700'
+                                : 'bg-white/60 border-slate-200 hover:bg-white'
+                            }`}
+                            title={`${r.artist} — ${r.title}`}
+                          >
+                            <div className="text-xs text-slate-500">{monthLabel(r.date)}</div>
+                            <div className="font-medium whitespace-nowrap max-w-[220px] overflow-hidden text-ellipsis">
+                              {r.artist} — {r.title}
+                            </div>
+                            <div className="text-xs text-slate-500 whitespace-nowrap max-w-[220px] overflow-hidden text-ellipsis">
+                              {r.context}
+                            </div>
+                          </button>
+                        )
+                      })}
+                    </div>
+                  </div>
+                )}
               </CardContent>
             </Card>
 
@@ -695,6 +797,7 @@ function App() {
       <Gallery />
 
       {/* VIDEOS (concerts + clips gérés dans le composant) */}
+      <Videos sort="desc" />
       <Videos />
 
       {/* RÉSEAUX SOCIAUX */}
