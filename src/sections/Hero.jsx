@@ -35,7 +35,7 @@ export default function Hero({ onGotoMusique, onGotoConcerts }) {
             variant="outline"
             className="border-white text-white hover:bg-white hover:text-orange-600 px-8 py-3 text-lg rounded-full hover-lift"
           >
-            <Calendar className="mr-2" size={20} /> Voir les concerts
+            <Calendar className="mr-2" size={20} /> Voir la tournée
           </Button>
         </div>
       </div>

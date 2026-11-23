@@ -1,8 +1,7 @@
 // src/App.jsx
-import React, { useState, useEffect } from 'react'
-import { Button } from '@/components/ui/button.jsx'
+import { useState, useEffect } from 'react'
 import {
-  Music, Play, Calendar, MapPin, Instagram, Youtube, Mail,
+  Music, Play, Calendar, Instagram, Youtube, Mail,
   Guitar, Camera, Video, Users, Menu as MenuIcon, X
 } from 'lucide-react'
 import './App.css'
@@ -47,7 +46,7 @@ function App() {
     { id: 'accueil', label: 'Accueil', icon: Music },
     { id: 'apropos', label: 'À propos', icon: Guitar },
     { id: 'musique', label: 'Musique', icon: Play },
-    { id: 'concerts', label: 'Concerts', icon: Calendar },
+    { id: 'concerts', label: 'Tournée', icon: Calendar },
     { id: 'galerie', label: 'Galerie', icon: Camera },
     { id: 'videos', label: 'Vidéos', icon: Video },
     { id: 'reseaux-sociaux', label: 'Réseaux', icon: Users },
@@ -264,7 +263,7 @@ function App() {
       {/* FOOTER */}
       <footer className="bg-black text-white py-8">
         <div className="container mx-auto px-6 text-center">
-          <p className="text-gray-400">© 2025 Kader Tarhanine. Tous droits réservés.</p>
+          <p className="text-gray-400">© {new Date().getFullYear()} Kader Tarhanine. Tous droits réservés.</p>
           <p className="text-gray-500 mt-2">Prince du Desert Blues • Musique Touarègue Moderne</p>
         </div>
       </footer>
