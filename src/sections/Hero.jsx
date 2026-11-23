@@ -1,43 +1,65 @@
-import React from 'react'
-import { Button } from '@/components/ui/button.jsx'
-import { Play, Calendar } from 'lucide-react'
-import kaderPhoto from '@/assets/4enTSMYZjml8.jpg'
-import desertLandscape from '@/assets/mH0NU1PYe0fM.jpg'
+import { useMemo } from 'react'
+import { Play } from 'lucide-react'
+import portrait from '@/assets/photos/kader-portrait-studio.jpg'
+import { concerts } from '@/data/concerts.js'
+import { links } from '@/data/links.js'
+import { formatRange, isOngoing, isOver, parseDate } from '@/lib/dates.js'
+import Ext from '@/components/Ext.jsx'
 
-export default function Hero({ onGotoMusique, onGotoConcerts }) {
+export default function Hero() {
+  const next = useMemo(
+    () => concerts.filter((c) => !isOver(c)).sort((a, b) => parseDate(a.date) - parseDate(b.date))[0],
+    []
+  )
+
   return (
-    <section id="accueil" className="hero-section flex items-center justify-center relative pt-24">
-      <div
-        className="absolute inset-0 parallax-bg opacity-30"
-        style={{ backgroundImage: `url(${desertLandscape})` }}
-      />
-      <div className="hero-overlay" />
-      <div className="relative z-10 text-center text-white px-6 py-20">
-        <img
-          src={kaderPhoto}
-          alt="Kader Tarhanine"
-          className="w-48 h-48 md:w-64 md:h-64 rounded-full mx-auto mt-6 mb-8 object-cover border-4 border-white/30 shadow-2xl"
-        />
-        <h1 className="text-4xl md:text-6xl lg:text-8xl font-bold mb-4">Kader Tarhanine</h1>
-        <p className="text-xl md:text-2xl lg:text-3xl mb-8">Prince du Desert Blues</p>
-        <p className="text-base md:text-lg lg:text-xl mb-12 max-w-2xl mx-auto opacity-90">
-          Artiste Touareg moderne alliant traditions sahariennes et sonorités rock contemporaines.
-        </p>
-        <div className="flex flex-col sm:flex-row gap-4 justify-center">
-          <Button
-            onClick={onGotoMusique}
-            className="bg-orange-600 hover:bg-orange-700 text-white px-8 py-3 text-lg rounded-full hover-lift"
-          >
-            <Play className="mr-2" size={20} /> Écouter ma musique
-          </Button>
-          <Button
-            onClick={onGotoConcerts}
-            variant="outline"
-            className="border-white text-white hover:bg-white hover:text-orange-600 px-8 py-3 text-lg rounded-full hover-lift"
-          >
-            <Calendar className="mr-2" size={20} /> Voir la tournée
-          </Button>
+    <section id="accueil" className="relative overflow-hidden bg-night text-white">
+      {/* trame de dunes discrète */}
+      <svg aria-hidden="true" className="pointer-events-none absolute inset-x-0 bottom-0 hidden h-48 lg:block w-full text-night-2" preserveAspectRatio="none" viewBox="0 0 1440 200">
+        <path fill="currentColor" d="M0 140 C 240 60 420 60 640 120 S 1060 200 1440 90 L1440 200 L0 200 Z" />
+      </svg>
+
+      <div className="wrap relative grid min-h-[100svh] items-center gap-10 pb-16 pt-28 lg:grid-cols-[minmax(0,1.3fr)_minmax(0,1fr)] lg:pt-20">
+        <div>
+          <p className="rise text-lg text-saffron">Blues touareg, du Sahara aux scènes du monde</p>
+          <h1 className="rise rise-2 mt-4 font-display font-black uppercase leading-[0.82] text-[clamp(3.6rem,19vw,7.5rem)] lg:text-[clamp(5rem,8.4vw,9rem)]">
+            Kader<br />Tarhanine
+          </h1>
+          <p className="rise rise-3 mt-6 max-w-xl text-lg text-white/80">
+            Guitares électriques, poésie tamasheq et rythmes nomades : la voix de la jeunesse saharienne,
+            entre le Mali, le Niger et l'Algérie.
+          </p>
+
+          {next && (
+            <a href="#tournee" className="rise rise-3 group mt-8 flex max-w-xl items-center gap-5 border-l-4 border-saffron py-1 pl-5">
+              <span>
+                <span className="block text-sm text-white/60">{isOngoing(next) ? 'En ce moment' : 'Prochain concert'}</span>
+                <span className="block font-display text-3xl font-bold group-hover:text-saffron">
+                  {next.city}, {formatRange(next, false)}
+                </span>
+                <span className="block text-white/70">{next.title}</span>
+              </span>
+            </a>
+          )}
+
+          <div className="rise rise-3 mt-8 flex flex-wrap gap-3">
+            <a href="#tournee" className="btn btn-saffron">Voir la tournée</a>
+            <Ext href={links.spotify} className="btn btn-ghost-light">
+              <Play size={16} aria-hidden="true" /> Écouter sur Spotify
+            </Ext>
+          </div>
         </div>
+
+        <figure className="rise rise-2 relative mx-auto w-full max-w-md lg:max-w-none">
+          <div className="overflow-hidden rounded-t-[999px] bg-white">
+            <img
+              src={portrait}
+              alt="Kader Tarhanine en tenue touarègue, guitare à la main"
+              className="aspect-[4/5] w-full object-cover object-top"
+              fetchpriority="high"
+            />
+          </div>
+        </figure>
       </div>
     </section>
   )
